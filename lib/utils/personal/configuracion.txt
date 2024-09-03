@@ -1,0 +1,105 @@
+flutter pub add google_sign_in
+dart pub global activate flutterfire_cli
+(seleccione android, aunque habia web y windows con espacio selecciono y deselecciono),
+flutterfire configure --project=pruebavendecasa
+aqui tengo que escribir mi dominio (asegurarme de elegir solo android)
+
+gov.es.barcelona.approm
+gov.es.barcelona.approom.barcelonaroom
+
+
+Agregar firebase_core: ^3.4.0
+
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+
+///FIRMA
+
+keytool -genkey -v -keystore C:\Users\Edgar\Downloads\keystoreroom.jks  -storetype JKS -keyalg RSA -keysize 2048 -validity 10000  -alias room
+clave: barcelona
+
+
+
+// ...
+
+await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
+
+https://pub.dev/packages/google_sign_in/install
+
+
+class CustomSearc extends SearchDelegate{
+
+  List<String> alldata = [
+    "opcion1", "opcion2", "opcion3"
+  ];
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return[
+      IconButton(icon: const Icon(Icons.clear),
+          onPressed: (){
+            query = '';
+      })
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return
+      IconButton(icon: const Icon(Icons.arrow_back),
+          onPressed: (){
+            close(context, null);
+          });
+  }
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return Theme.of(context).copyWith(
+      scaffoldBackgroundColor: Colors.white70,
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for(var item in alldata) {
+      if(item.toLowerCase().contains(query.toLowerCase())){
+        matchQuery.add(item);
+      }
+
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+          var result = matchQuery[index];
+          return ListTile(title: Text(result),
+          );
+        }
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for(var item in alldata) {
+      if(item.toLowerCase().contains(query.toLowerCase())){
+        matchQuery.add(item);
+      }
+
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+          var result = matchQuery[index];
+          return ListTile(title: Text(result),
+          );
+        }
+    );
+  }
+
+
+
+}

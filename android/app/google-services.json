@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "767436123138",
+    "project_id": "pruebavendecasa",
+    "storage_bucket": "pruebavendecasa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767436123138:android:3bd52fdfa7d1f043448b1b",
+        "android_client_info": {
+          "package_name": "com.example.firebaseprueba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1LeAqii10bxjXP93AYFXgPehI0H99k0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767436123138:android:c9f9577684e4c68d448b1b",
+        "android_client_info": {
+          "package_name": "gov.es.barcelona.approom.barcelonaroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1LeAqii10bxjXP93AYFXgPehI0H99k0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
