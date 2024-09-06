@@ -1,11 +1,9 @@
 class Resources {
 
-  static const String usuario = "(Nombre)";
-  static const String backgroundAzul = 'assets/bg2.png';
-  static const String iconInfo = "info.png";
-  static const String fondo = "bg.png";
-  static const String loginLogo = "loginLogo.png";
-
-
+  static const String backgroundAzul =    "assets/bg2.png";
+  static const String iconInfo =          "assets/info.png";
+  static const String fondo =             "assets/bg.png";
+  static const String loginLogo =         "assets/loginLogo.png";
+  static const String google =            "assets/google.png";
 
 }

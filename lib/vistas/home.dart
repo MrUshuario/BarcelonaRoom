@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
 import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/detalle.dart';
+import 'package:barcelonaroom/vistas/usuario.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,15 +16,15 @@ import 'package:http/http.dart' as http;
 
 
 
-class home extends StatefulWidget {
+class Home extends StatefulWidget {
 
   List<Apartamento> listApartamentos = List.empty(growable: true);
 
   @override
-  State<StatefulWidget> createState() => _home();
+  State<StatefulWidget> createState() => _Home();
 }
 
-class _home extends State<home> {
+class _Home extends State<Home> {
 
 
   @override
@@ -37,6 +39,7 @@ class _home extends State<home> {
     for (int i = 1; i <= 10; i++) {
       Apartamento objaux = Apartamento();
       objaux.codigoApartamento = i;
+      objaux.urlimagen = "https://picsum.photos/250?image=3";
       objaux.descripcionApartamento = "Por el momento";
       objaux.precioApartamento = (i+1)*100;
       widget.listApartamentos.add(objaux);
@@ -147,114 +150,341 @@ class _home extends State<home> {
             margin: const EdgeInsets.only(top: 20.0),
             child: Padding(
               padding: const EdgeInsets.all(10.0), // Add margin here
-              child: Column(
+              child: Row(
                   children: [
-                    //BUSCADOR
-                    SearchAnchor(
-                        builder: (BuildContext context, SearchController controller) {
-                          return SearchBar(
-                            controller: controller,
-                            padding: const MaterialStatePropertyAll<EdgeInsets>(
+
+                    Expanded(
+                      flex: 8,
+                      child: SearchAnchor(
+                      builder: (BuildContext context, SearchController controller) {
+                        return SearchBar(
+                          controller: controller,
+                          padding: const MaterialStatePropertyAll<EdgeInsets>(
                               EdgeInsets.symmetric(horizontal: 16)),
-                            onTap: (){
-                              controller.openView();
-                            },
-                            onChanged: (_){
-                              controller.openView();
-                            },
-                            leading: const Icon(Icons.search),
-                            /*trailing: <Widget>[
+                          onTap: (){
+                            controller.openView();
+                          },
+                          onChanged: (_){
+                            controller.openView();
+                          },
+                          leading: const Icon(Icons.search),
+                          /*trailing: <Widget>[
                               Tooltip(
                                 message: ,
                               )
                             ],*/
+                        );
+                      },
+                      suggestionsBuilder: (BuildContext context, SearchController controller){
+                        return List<ListTile>.generate(5, (int index) {
+                          final String item = 'item $index';
+                          return ListTile(
+                            title: Text(item),
+                            onTap: (){
+                              setState(() {
+                                controller.closeView(item);
+                              });
+                            },
                           );
-                        },
-                        suggestionsBuilder: (BuildContext context, SearchController controller){
-                          return List<ListTile>.generate(5, (int index) {
-                            final String item = 'item $index';
-                            return ListTile(
-                              title: Text(item),
-                              onTap: (){
-                                setState(() {
-                                  controller.closeView(item);
-                                });
-                              },
-                            );
-                          });
-                        }
-                    ),
+                        });
+                      }
+                  ),
+                  ),
 
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child:    GestureDetector(
-                              onTap: () async {
 
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.all(10.0),
-                                alignment: Alignment.center,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0)),
-                                  color: Color.fromARGB(255, 27, 65, 187),
-                                ),
-                                padding: const EdgeInsets.only(top: 16, bottom: 16),
-                                child: const Text("BOTON EJEMPLO",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500)),
-                              )),
-                        ),
-                      ],
-                    ),
+                      Expanded(
+                        flex: 2,
+                        child:
+                        GestureDetector(
+                            onTap: () async {
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                color: Color.fromARGB(255, 27, 65, 187),
+                              ),
+                              padding: const EdgeInsets.only(top: 16, bottom: 16),
+                              child: const Icon(
+                              Icons.settings_applications, // Replace "e" with Icons.search
+                              color: Colors.white,
+                            ),
+                            )),
+                      )
+
+                    //Icons.search
+
+
+
+
+
                   ]
               ),
             ),
           ),
 
+          //FILTRO
+          Container(
+            height: MediaQuery.of(context).size.height * 0.15,
+            child:
+              Scrollbar(
+                thickness: 9.0,
+                radius: Radius.circular(5.0),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Row(
+                      children: [
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.house, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Casa", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+
+                            )
+                        ),
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.bed, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Habitación", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.reduce_capacity, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Comunitario", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.monetization_on, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Alquilados", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.access_time, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Sin alquilar", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.garage, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Garaje", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+                        Padding(padding: EdgeInsets.all(5.0),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 8, 157, 243),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.local_play_sharp, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                      //logoutFunction();
+                                    },
+                                  ),
+                                  const Text("Zona Turistica", style: TextStyle(color: Colors.black)), // Your text
+                                  const SizedBox(height: 5.0),
+                                ],
+                              ),
+                            )
+                        ),
+
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+
+          ),
+
+
+
           //PARTE 3 CUERPO
+
 
           SizedBox(
           width: double.maxFinite,
           height: MediaQuery.of(context).size.height * 0.65,
-          child:Expanded(
-                    child: widget.listApartamentos.isNotEmpty
+          child: widget.listApartamentos.isNotEmpty
                         ? ListView.builder(itemCount: widget.listApartamentos!.length,
                       itemBuilder: (context, index) {
                         return Card(
                           child: InkWell(
                             onTap: () {
-                              //ModificarBorrar(index, widget.listApartamentos![index]);
+                              //IR A DETALLE
+                              Apartamento objaux = Apartamento();
+                              objaux = widget.listApartamentos![index];
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Detalle(objaux)),
+                              );
+
+
                             },
                             child: ListTile(
-                              title: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.040,
-                                child: Text(
-                                  "${widget.listApartamentos![index].codigoApartamento}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15.0,
-                                  ),
+                              title: Align(
+                                alignment: Alignment.center,
+                                child:
+                                Image.network(
+                                  widget.listApartamentos![index].urlimagen != null
+                                      ? widget.listApartamentos![index].urlimagen!
+                                      : 'path/to/placeholder_image.jpg',
+                                  width: 200.0,
+                                  height: 200.0,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Descripción: ${widget.listApartamentos![index].descripcionApartamento}",
+
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+                                  Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcionApartamento}",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.040,
-                                  ),
+
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
                                   Text(
                                     "Precio: ${widget.listApartamentos![index].precioApartamento}",
@@ -272,10 +502,10 @@ class _home extends State<home> {
                         );
                       },)
                         : const Text('Aún no hay data para mostrar')
-                ),
+
           ),
 
-          //PARTE 4 PIE
+          //PARTE 5 PIE
 
           Row(
             children: [
@@ -334,7 +564,12 @@ class _home extends State<home> {
                   child:IconButton(
                       icon: const Icon(Icons.person, color: Colors.black),
                       onPressed: () {
-                        logoutFunction();
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => usuario()),
+                        );
+
                       }
                   )
               ),

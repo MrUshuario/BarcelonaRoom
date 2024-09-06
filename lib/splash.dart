@@ -125,7 +125,7 @@ class _SplashPageState extends State<SplashPage> {
   _home() async {
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  home()));
+        MaterialPageRoute(builder: (context) =>  Home()));
   }
 
 

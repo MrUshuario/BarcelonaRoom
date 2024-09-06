@@ -13,6 +13,7 @@ Agregar firebase_core: ^3.4.0
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+git push -u origin main
 
 ///FIRMA
 

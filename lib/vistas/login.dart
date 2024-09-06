@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/firebase_options.dart';
+import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -258,10 +259,10 @@ class _login extends State<login> {
 
         GestureDetector(
             onTap: ()  {
-              Navigator.pop(context); // Cierra el diálogo
+              //Navigator.pop(context); // Cierra el diálogo
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => home()),
+                MaterialPageRoute(builder: (context) => Home()),
               );
             },
             child: Container(
@@ -279,6 +280,17 @@ class _login extends State<login> {
                       fontSize: 15,
                       fontWeight: FontWeight.w500)),
             )),
+
+
+            IconButton(
+                icon: Image.asset(Resources.google),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                }
+            )
 
 
 
