@@ -18,7 +18,21 @@ import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
 
+  //LISTA QUE SE MUESTRA
   List<Apartamento> listApartamentos = List.empty(growable: true);
+
+  //LISTA DE COLORES ICONOS BOTONES
+  bool activadoCasa = false;
+  bool activadoHabitacion = false;
+  bool activadoComunitario = false;
+  bool activadoAlquilados = false;
+  bool activadoSinAlquilar= false;
+  bool activadoGaraje = false;
+  bool activadoZonaTuristica = false;
+
+  Color botoniconDesactivado = const Color.fromARGB(255, 164, 181, 236);
+  Color botoniconActivado = const Color.fromARGB(255, 8, 157, 243);
+
 
   @override
   State<StatefulWidget> createState() => _Home();
@@ -35,7 +49,6 @@ class _Home extends State<Home> {
   }
 
   void cargardataprueba()  {
-
     for (int i = 1; i <= 10; i++) {
       Apartamento objaux = Apartamento();
       objaux.codigoApartamento = i;
@@ -44,8 +57,39 @@ class _Home extends State<Home> {
       objaux.precioApartamento = (i+1)*100;
       widget.listApartamentos.add(objaux);
     }
+  }
 
-    
+  void filtro(String boton)  {
+
+
+    setState(() {
+
+      widget.activadoCasa = false;
+      widget.activadoHabitacion = false;
+      widget.activadoComunitario = false;
+      widget.activadoAlquilados = false;
+      widget.activadoSinAlquilar= false;
+      widget.activadoGaraje = false;
+      widget.activadoZonaTuristica = false;
+
+
+      switch (boton) {
+        case "a":
+        widget.activadoCasa =           true;
+        case "b":
+        widget.activadoHabitacion =     true;
+        case "c":
+        widget.activadoComunitario =    true;
+        case "d":
+        widget.activadoAlquilados =     true;
+        case "e":
+        widget.activadoSinAlquilar =    true;
+        case "f":
+        widget.activadoGaraje =         true;
+        case "g":
+        widget.activadoZonaTuristica =  true;
+      }
+    });
   }
 
 
@@ -54,22 +98,6 @@ class _Home extends State<Home> {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
-        /*appBar: AppBar(
-          title: const Text(
-            Resources.usuario,
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Color.fromARGB(255, 27, 65, 187),
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.logout, color: Colors.white),
-                onPressed: () {
-                  logoutFunction();
-                }
-            )
-          ],
-        ), */
-        //drawer: const MenuLateral(),
         body: Stack(
           children: [
             Container(
@@ -85,8 +113,7 @@ class _Home extends State<Home> {
             //Center( child:
             SingleChildScrollView(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  margin: const EdgeInsets.symmetric(horizontal: 24.0),
+                  width: double.infinity,
                   child: Form(
                     //key: widget.keyForm,
                     child: formUI(),
@@ -134,24 +161,21 @@ class _Home extends State<Home> {
         children: [
           //PARTE 2 FILTROS
           Container(
-
-            /*decoration: ShapeDecoration(
-              color: const Color(0xffEDF1F1),
-              shape: RoundedRectangleBorder( // Define rounded rectangle shape
-                borderRadius: BorderRadius.circular(10.0), // Adjust border radius
-                side: const BorderSide( // Add border with desired properties
-                  color: Colors.black54, // Set border color to black
-                  width: 3.0, // Adjust border width (optional)
-
-                ),
-              ),
-            ),*/
-
             margin: const EdgeInsets.only(top: 20.0),
             child: Padding(
-              padding: const EdgeInsets.all(10.0), // Add margin here
+              padding: const EdgeInsets.all(0), // Add margin here
               child: Row(
                   children: [
+
+
+                    Padding(
+                        padding: const EdgeInsets.all(10), // Add margin here
+                        child: Row(
+                            children: [
+
+                            ])
+                    ),
+
 
                     Expanded(
                       flex: 8,
@@ -192,32 +216,27 @@ class _Home extends State<Home> {
                   ),
 
 
-                      Expanded(
-                        flex: 2,
-                        child:
-                        GestureDetector(
-                            onTap: () async {
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(10.0),
-                              alignment: Alignment.center,
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0)),
-                                color: Color.fromARGB(255, 27, 65, 187),
-                              ),
-                              padding: const EdgeInsets.only(top: 16, bottom: 16),
-                              child: const Icon(
-                              Icons.settings_applications, // Replace "e" with Icons.search
-                              color: Colors.white,
-                            ),
-                            )),
-                      )
-
-                    //Icons.search
-
-
-
+                  Expanded(
+                    flex: 2,
+                    child:
+                    GestureDetector(
+                        onTap: () async {
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(10.0),
+                          alignment: Alignment.center,
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            color: Color.fromARGB(255, 27, 65, 187),
+                          ),
+                          padding: const EdgeInsets.only(top: 16, bottom: 16),
+                          child: const Icon(
+                          Icons.settings_applications, // Replace "e" with Icons.search
+                          color: Colors.white,
+                        ),
+                        )),
+                  )
 
 
                   ]
@@ -243,7 +262,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoCasa ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -254,7 +273,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.house, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("a");
                                     },
                                   ),
                                   const Text("Casa", style: TextStyle(color: Colors.black)), // Your text
@@ -270,7 +289,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoHabitacion ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -281,7 +300,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.bed, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("b");
                                     },
                                   ),
                                   const Text("Habitación", style: TextStyle(color: Colors.black)), // Your text
@@ -296,7 +315,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoComunitario ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -307,7 +326,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.reduce_capacity, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("c");
                                     },
                                   ),
                                   const Text("Comunitario", style: TextStyle(color: Colors.black)), // Your text
@@ -323,7 +342,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoAlquilados ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -334,7 +353,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.monetization_on, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("d");
                                     },
                                   ),
                                   const Text("Alquilados", style: TextStyle(color: Colors.black)), // Your text
@@ -349,7 +368,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoSinAlquilar ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -360,7 +379,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.access_time, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("e");
                                     },
                                   ),
                                   const Text("Sin alquilar", style: TextStyle(color: Colors.black)), // Your text
@@ -376,7 +395,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoGaraje ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -387,7 +406,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.garage, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("f");
                                     },
                                   ),
                                   const Text("Garaje", style: TextStyle(color: Colors.black)), // Your text
@@ -402,7 +421,7 @@ class _Home extends State<Home> {
                               height: 100,
                               width: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 8, 157, 243),
+                                color: widget.activadoZonaTuristica ? widget.botoniconDesactivado : widget.botoniconActivado,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Column(
@@ -413,7 +432,7 @@ class _Home extends State<Home> {
                                   IconButton(
                                     icon: const Icon(Icons.local_play_sharp, size: 50.0, color: Colors.black),
                                     onPressed: () {
-                                      //logoutFunction();
+                                      filtro("g");
                                     },
                                   ),
                                   const Text("Zona Turistica", style: TextStyle(color: Colors.black)), // Your text
@@ -436,75 +455,81 @@ class _Home extends State<Home> {
 
           //PARTE 3 CUERPO
 
+            Padding(
+                padding: const EdgeInsets.only(left: 10), // POR ALGUN MOTIVO NO SE CENTRA ASI QUE PONGO POR EL MOMENTO
+                child:
+                  SizedBox(
+                  width: double.maxFinite,
+                  height: MediaQuery.of(context).size.height * 0.62,
+                  child:
+                      widget.listApartamentos.isNotEmpty
+                                ? ListView.builder(itemCount: widget.listApartamentos!.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  //margin: EdgeInsets.zero,
+                                  child: InkWell(
+                                    onTap: () {
+                                      //IR A DETALLE
+                                      Apartamento objaux = Apartamento();
+                                      objaux = widget.listApartamentos![index];
 
-          SizedBox(
-          width: double.maxFinite,
-          height: MediaQuery.of(context).size.height * 0.65,
-          child: widget.listApartamentos.isNotEmpty
-                        ? ListView.builder(itemCount: widget.listApartamentos!.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: InkWell(
-                            onTap: () {
-                              //IR A DETALLE
-                              Apartamento objaux = Apartamento();
-                              objaux = widget.listApartamentos![index];
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => Detalle(objaux)),
+                                      );
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Detalle(objaux)),
-                              );
+                                    },
+                                    child: ListTile(
+                                      title:
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0), // Adjust as desired
+                                          child: Image.network(
+                                            widget.listApartamentos![index].urlimagen != null
+                                                ? widget.listApartamentos![index].urlimagen!
+                                                : 'path/to/placeholder_image.jpg',
+                                            width: double.maxFinite,
+                                            height: 200.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
 
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
 
-                            },
-                            child: ListTile(
-                              title: Align(
-                                alignment: Alignment.center,
-                                child:
-                                Image.network(
-                                  widget.listApartamentos![index].urlimagen != null
-                                      ? widget.listApartamentos![index].urlimagen!
-                                      : 'path/to/placeholder_image.jpg',
-                                  width: 200.0,
-                                  height: 200.0,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+                                          Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcionApartamento}",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                              fontSize: 15.0,
+                                            ),
+                                          ),
 
-                                  Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcionApartamento}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: const TextStyle(
-                                      fontSize: 15.0,
+                                          SizedBox(height: 20),
+
+                                          Text(
+                                            "Precio: ${widget.listApartamentos![index].precioApartamento}",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                              fontSize: 15.0,
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 20),
+
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                );
+                              },)
+                                : const Text('Aún no hay data para mostrar')
 
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
-
-                                  Text(
-                                    "Precio: ${widget.listApartamentos![index].precioApartamento}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: const TextStyle(
-                                      fontSize: 15.0,
-                                    ),
-                                  ),
-
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },)
-                        : const Text('Aún no hay data para mostrar')
-
-          ),
-
+                  ),
+            ),
           //PARTE 5 PIE
 
           Row(

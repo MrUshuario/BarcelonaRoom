@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:barcelonaroom/obj/OBJusuario.dart';
 import 'package:barcelonaroom/utils/resources_apis.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
@@ -44,12 +47,11 @@ class apiprovider_formulario {
 */
 
   //AUTOGENERADO YA NO SE USA
-  /*
-  Future<List<Formulario>> post_FormularioLista(String token) async {
-    final Map<String, dynamic> bodyData = {'idFormato': apisResources.api_idFormato};
+
+  Future<List<Usuario>> post_Login(String token) async {
+    final Map<String, dynamic> bodyData = {'idFormato': "ingresar login futuro"};
     try {
-      print("iniciando api_get_LoginForm...");
-      print(bodyData);
+      print("post_Login");
       String url_login = api_get_login_usuario;
       Uri uri = Uri.parse(url_login);
       final response = await client.post(
@@ -63,57 +65,16 @@ class apiprovider_formulario {
       print("response api_get_LoginForm FINAL...${response.body}");
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return Formulario.listFromJson(data['formulario']);
+        return Usuario.listFromJson(data['formulario']);
       } else {
-        List<Formulario> ubi = List.empty();
+        List<Usuario> ubi = List.empty();
         return  ubi;
       }
     } catch (e) {
-      List<Formulario> ubi = List.empty();
+      List<Usuario> ubi = List.empty();
       return  ubi;
     }
   }
-
-  //ENVIAR RPTA
-  Future<insertarEncuestaRSPTA> post_EnviarRspt(RespuestaENVIO resp, String token) async {
-    try {
-      print("iniciando api_get_FormAnswerd...");
-      print(resp.toString());
-      String url_login = api_get_FormAnswerd;
-      Uri uri = Uri.parse(url_login);
-      String body = json.encode(resp.toMap());
-      final response = await client.post(
-        uri,
-        body: body,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-      );
-      print("response api_get_FormAnswerd...${response.body}");
-      if (response.statusCode == 200) {
-        return insertarEncuestaRSPTA.fromJson(json.decode(response.body));
-      } else if((response.statusCode == 401) ) {
-        insertarEncuestaRSPTA objaux = insertarEncuestaRSPTA();
-        objaux.codigo = "Acceso no autorizado";
-        return objaux;
-      } else {
-        return insertarEncuestaRSPTA.fromJson(json.decode(response.body));
-      }
-    } catch (e) {
-      throw Exception(e);
-    }
-
-
-  }
-*/
-
-
-
-
-
-
-
 
 
 }
