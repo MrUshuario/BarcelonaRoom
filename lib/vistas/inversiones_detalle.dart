@@ -1,5 +1,7 @@
 import 'package:barcelonaroom/obj/OBJinversion.dart';
+import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -121,6 +123,32 @@ class _Inversiondetalle extends State<Inversiondetalle> {
             ),
           ),
 
+          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+          //BOTON FILTRO
+          GestureDetector(
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  color: Colors.amber,
+                ),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: const Text("Volver al menú",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500)),
+              )),
 
 
         ],),

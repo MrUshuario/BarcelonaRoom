@@ -100,7 +100,7 @@ class _SplashPageState extends State<SplashPage> {
       String? nombreusuario;
 
       setState(() {
-        PREFUsuario = prefs.getString('usuario') ?? "";
+        PREFUsuario = prefs.getString('nombre') ?? "";
       });
 
       if(PREFUsuario == ""){

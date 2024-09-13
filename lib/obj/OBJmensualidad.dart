@@ -1,48 +1,33 @@
-class Inversion {
-  int? codigoInversion;
-  String? codigoFondo;
-  String? nombreInversion;
-  int? montoInversion;
-  double? porcentajeInteres;
-  int? montoBeneficioTotal;
-  String? fechaInversion;
+class Mensualidad {
+  int? codigomes;
+  String? mes;
+  double? montopagado;
 
-  Inversion({
-    this.codigoInversion,
-    this.codigoFondo,
-    this.nombreInversion,
-    this.montoInversion,
-    this.porcentajeInteres,
-    this.montoBeneficioTotal,
-    this.fechaInversion
+
+  Mensualidad({
+    this.codigomes,
+    this.mes,
+    this.montopagado,
   });
 
-  factory Inversion.fromJson(dynamic json)  => Inversion(
-    codigoInversion: json['codigoInversion'] as int?,
-    codigoFondo: json['codigoFondo'] as String?,
-    nombreInversion: json['nombreInversion'] as String?,
-    montoInversion: json['montoInversion'] as int?,
-    porcentajeInteres: json['porcentajeInteres'] as double?,
-    montoBeneficioTotal: json['montoBeneficioTotal'] as int?,
-    fechaInversion: json['fechaInversion'] as String?,
+  factory Mensualidad.fromJson(dynamic json)  => Mensualidad(
+    codigomes: json['codigomes'] as int?,
+    mes: json['mes'] as String?,
+    montopagado: json['montopagado'] as double?,
   );
 
-  static List<Inversion> listFromJson(dynamic json) {
+  static List<Mensualidad> listFromJson(dynamic json) {
     var bienvenidaList = json as List;
-    List<Inversion> items =
-    bienvenidaList.map((e) => Inversion.fromJson(e)).toList();
+    List<Mensualidad> items =
+    bienvenidaList.map((e) => Mensualidad.fromJson(e)).toList();
     return items ?? [];
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "codigoInversion": codigoInversion,
-      "codigoFondo": codigoFondo,
-      "nombreInversion": nombreInversion,
-      "montoInversion":montoInversion,
-      "porcentajeInteres": porcentajeInteres,
-      "montoBeneficioTotal": montoBeneficioTotal,
-      "fechaInversion": fechaInversion,
+      "codigomes": codigomes,
+      "mes": mes,
+      "montopagado": montopagado,
     };
   }
   

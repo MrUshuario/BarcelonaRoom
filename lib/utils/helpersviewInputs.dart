@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HelpersViewBlancoIcon {
+class HelpersViewInputs{
 
 
   static Widget formItemsDesign(icon, item, context) {

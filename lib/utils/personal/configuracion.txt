@@ -7,6 +7,8 @@ aqui tengo que escribir mi dominio (asegurarme de elegir solo android)
 gov.es.barcelona.approm
 gov.es.barcelona.approom.barcelonaroom
 
+https://pub.dev/packages/syncfusion_flutter_charts/install
+CHARTS / GRAFICOS
 
 Agregar firebase_core: ^3.4.0
 
@@ -20,7 +22,12 @@ git push -u origin main
 keytool -genkey -v -keystore C:\Users\Edgar\Downloads\keystoreroom.jks  -storetype JKS -keyalg RSA -keysize 2048 -validity 10000  -alias room
 clave: barcelona
 
-
+Store: C:\Users\Edgar\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 2C:F6:F6:66:30:E2:84:F9:7B:98:B2:E8:A7:0D:6F:21
+SHA1: 1E:6F:6E:95:E4:A6:BB:4E:2B:27:6A:96:40:1B:CD:5F:B1:89:84:33
+SHA-256: F9:21:67:C7:FF:EC:18:81:47:71:49:7D:A6:5B:8C:D2:B0:AE:09:03:82:0D:C3:E2:BD:00:B6:DF:BE:00:86:07
+Valid until: viernes, 18 de julio de 2053
 
 // ...
 

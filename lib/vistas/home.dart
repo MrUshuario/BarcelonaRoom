@@ -1,16 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
+import 'package:barcelonaroom/obj/OBJinversion.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
+import 'package:barcelonaroom/utils/helpersviewInputs.dart';
+import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
-import 'package:barcelonaroom/vistas/detalle.dart';
+import 'package:barcelonaroom/vistas/departamento_detalle.dart';
+import 'package:barcelonaroom/vistas/inversiones_detalle.dart';
+import 'package:barcelonaroom/vistas/inversiones_general.dart';
+import 'package:barcelonaroom/vistas/login.dart';
 import 'package:barcelonaroom/vistas/usuario.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -18,8 +26,13 @@ import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
 
-  //LISTA QUE SE MUESTRA
+  //LISTA QUE SE MUESTRA PRIMERO
   List<Apartamento> listApartamentos = List.empty(growable: true);
+  //LISTA QUE SE MUESTRA SEGUNDO
+  List<Inversion> listInversiones = List.empty(growable: true);
+
+  //DETALLE
+  Apartamento formDetalle = Apartamento();
 
   //LISTA DE COLORES ICONOS BOTONES
   bool activadoCasa = false;
@@ -30,8 +43,8 @@ class Home extends StatefulWidget {
   bool activadoGaraje = false;
   bool activadoZonaTuristica = false;
 
-  Color botoniconDesactivado = const Color.fromARGB(255, 164, 181, 236);
-  Color botoniconActivado = const Color.fromARGB(255, 8, 157, 243);
+  Color botoniconDesactivado = const Color.fromARGB(255, 255, 191, 0);
+  Color botoniconActivado = const Color.fromARGB(255, 164, 181, 236);
 
 
   @override
@@ -39,23 +52,54 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  int currentPageIndex = 0;
+  String? PREFname; //1er nombre 2do nombre apellidos
+  String? PREFdni;
 
 
   @override
   void initState() {
     cargardataprueba();
+    cargardatosiniciales();
     super.initState();
 
   }
 
+  Future<void> cargardatosiniciales()  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
+      PREFdni = prefs.getString('dni') ?? "00000000";
+    });
+  }
+
+  void SalirCuenta() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('name',"USUARIO PRUEBA");
+    await prefs.setString('dni', "");
+  }
+
   void cargardataprueba()  {
     for (int i = 1; i <= 10; i++) {
+
       Apartamento objaux = Apartamento();
       objaux.codigoApartamento = i;
       objaux.urlimagen = "https://picsum.photos/250?image=3";
       objaux.descripcionApartamento = "Por el momento";
       objaux.precioApartamento = (i+1)*100;
       widget.listApartamentos.add(objaux);
+
+      Inversion objaux2 = Inversion();
+      objaux2.codigoInversion = i;
+      objaux2.codigoFondo = "A0BC$i";
+      objaux2.nombreInversion = "Comprado Habitación";
+      objaux2.montoInversion = 1000+(i*100);
+      objaux2.porcentajeInteres = 2;
+      //objaux2.montoBeneficioTotal = (i+1)*100;
+      objaux2.fechaInversion = "12/09/2024";
+      widget.listInversiones.add(objaux2);
+
+
     }
   }
 
@@ -92,13 +136,144 @@ class _Home extends State<Home> {
     });
   }
 
+  void showfiltromodal() {
+
+    TextEditingController inversionmin = TextEditingController();
+    TextEditingController inversionmax = TextEditingController();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          //TALVEZ SIRVA TALVEZ NO
+          return StatefulBuilder(
+              builder: (context, setState) {
+                return AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: const Text(
+                    'Tipo de Registro:',
+                    style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                ),
+                ),
+                content: SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: Column(
+                  children: [
+
+                    Row(
+                    children: [
+                  const Text('Monto mínimo:', style: TextStyle(
+                    fontSize: 12.0,
+                    //color: Colors.white,
+                  ),),
+
+                    HelpersViewInputs.formItemsDesignDNI(
+                        TextFormField(
+                          controller: inversionmin,
+                          decoration: const InputDecoration(
+                            labelText: '€',
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          maxLength: 8,
+                        ), context),
+
+                    Icon(Icons.monetization_on, size: 20.0, color: Colors.black),
+                    ],
+                    ),
+
+                    Row(
+                      children: [
+
+                    const Text('Monto máximo:', style: TextStyle(
+                    fontSize: 12.0,
+                    //color: Colors.white,
+                    ),),
+
+                    HelpersViewInputs.formItemsDesignDNI(
+                    TextFormField(
+                      controller: inversionmax,
+                      decoration: const InputDecoration(
+                      labelText: '€',
+                    ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 8,
+                    ), context),
+
+                    Icon(Icons.monetization_on, size: 20.0, color: Colors.black),
+
+                  ],
+                    ),
+
+                    //BOTON FILTRO
+                    GestureDetector(
+                        onTap: () async {
+                          //await aplicar filtros();
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                          alignment: Alignment.center,
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                            color: widget.botoniconDesactivado,
+                          ),
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: const Text("Aplicar Filtros",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500)),
+                        )),
+
+                    const SizedBox(height: 8.0),
+
+                    GestureDetector(
+                        onTap: () async {
+                          //await quitar filtros();
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                          alignment: Alignment.center,
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                            color: Colors.red,
+                          ),
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: const Text("Borrar Filtros",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500)),
+                        )),
+
+
+                  ]),
+                ),
+
+                );
+          },);
+        }
+    );
+
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
-        body: Stack(
+        body: <Widget>[
+
+        Stack(
           children: [
             Container(
               width: double.infinity,
@@ -123,6 +298,92 @@ class _Home extends State<Home> {
            // ),
           ],
         ),
+
+          //PARTE2
+          Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  Resources.backgroundAzul, // Replace with your image path
+                  fit: BoxFit.cover, // Adjust fit as needed
+                ),
+              ),
+
+              // Existing content with Center, SingleChildScrollView, and Container
+              //Center( child:
+              SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  child: Form(
+                    //key: widget.keyForm,
+                    child: formUI2(),
+                  ),
+                ),
+              ),
+              // ),
+            ],
+          ),
+
+          //PARTE3
+          Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  Resources.backgroundAzul, // Replace with your image path
+                  fit: BoxFit.cover, // Adjust fit as needed
+                ),
+              ),
+
+              // Existing content with Center, SingleChildScrollView, and Container
+              //Center( child:
+              SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  child: Form(
+                    //key: widget.keyForm,
+                    child: formUI3(),
+                  ),
+                ),
+              ),
+              // ),
+            ],
+          ),
+
+
+        ][currentPageIndex],
+
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          indicatorColor: Colors.amber,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+
+            NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Departamentos',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.monetization_on),
+              icon: Icon(Icons.monetization_on_outlined),
+              label: 'Inversiones',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.account_box_rounded),
+              icon: Icon(Icons.account_box_outlined),
+              label: 'Cuenta',
+            ),
+          ],
+        ),
+
       ),
     );
   }
@@ -153,6 +414,270 @@ class _Home extends State<Home> {
         }
     );
   }
+
+  /*
+  void CambiarPagina(Apartamento obj) {
+    setState(() {
+      widget.formDetalle = obj;
+      currentPageIndex = 3;
+    });
+  } */
+
+
+  Widget formUI2() {
+    return Container(
+        child: Column(
+        children: [
+
+          Padding(
+            padding: const EdgeInsets.only(top: 25.0, bottom: 8.0, left: 8.0, right: 8.0),
+            child:
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color:  Colors.amber,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      // Add spacing between icon and text (optional)
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.black),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Inversiongeneral()),
+                            );
+                          },
+                        ),
+
+                        const Text("Resumen General", style: TextStyle(color: Colors.black)), // Your text
+                        const SizedBox(height: 5.0),
+
+                      ],
+                    ),
+                  ),
+                ),
+
+                const Expanded(
+                  flex: 1,
+                  child: const SizedBox(height: 1.0),
+                ),
+
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color:  Colors.amber,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      // Add spacing between icon and text (optional)
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.search, size: 50.0, color: Colors.black),
+                          onPressed: () {
+                            showfiltromodal();
+                          },
+                        ),
+                        const Text("Filtrar resultados", style: TextStyle(color: Colors.black)), // Your text
+                        const SizedBox(height: 5.0),
+
+                      ],
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          //
+          Padding(
+            padding: const EdgeInsets.all(5), // POR ALGUN MOTIVO NO SE CENTRA ASI QUE PONGO POR EL MOMENTO
+            child:
+            SizedBox(
+                width: MediaQuery.of(context).size.height * 0.90,
+                height: MediaQuery.of(context).size.height * 0.70,
+                child:
+                widget.listInversiones.isNotEmpty
+                    ? ListView.builder(itemCount: widget.listInversiones!.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                        child: InkWell(
+                        onTap: () {
+                          //IR A DETALLE
+                          Inversion objaux = Inversion();
+                          objaux = widget.listInversiones![index];
+                          //CambiarPagina(objaux);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Inversiondetalle(objaux)),
+                          );
+                          },
+                            child:
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+                                Text("${widget.listInversiones![index].codigoInversion}) Nombre: ${widget.listInversiones![index].nombreInversion}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+
+                                SizedBox(height: 20),
+
+                                Text(
+                                  "Inversion: ${widget.listInversiones![index].montoInversion}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+
+                                SizedBox(height: 20),
+
+                                Text(
+                                  "Fecha inversion: ${widget.listInversiones![index].fechaInversion}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+
+
+
+                              ],
+                            ),
+                        ),
+                    );
+                  },)
+                    : const Text('Aún no hay data para mostrar')
+
+            ),
+          ),
+
+        ]),
+    );
+  }
+
+  Widget formUI3() {
+    return Container(
+      child: Column(
+          children: [
+
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
+                child:
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color:  Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          // Add spacing between icon and text (optional)
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.white),
+                              onPressed: () {
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const Expanded(
+                      flex: 1,
+                      child: const SizedBox(height: 1.0),
+                    ),
+
+                     Expanded(
+                      flex: 7,
+                      child:
+
+                      Column(
+                        children: [
+                          HelpersViewLetrasSubs.formItemsDesign("$PREFname"),
+                          const SizedBox(height: 5.0),
+                          HelpersViewLetrasSubs.formItemsDesign( "DNI: $PREFdni"),
+                        ],),
+                    ),
+                  ],
+                ),
+            ),
+
+
+            Padding(
+            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
+            child:
+            Column(
+              children: [
+
+                  HelpersViewLetrasSubs.formItemsDesignLinea(),
+                  const SizedBox(height: 5.0),
+
+                GestureDetector(
+                    onTap: ()   async {
+
+                      SalirCuenta();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => login()),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                        color: widget.botoniconDesactivado,
+                      ),
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: const Text("Cerrar Sesion",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500)),
+                    )),
+
+              ],),
+            ),
+
+
+          ]),
+    );
+  }
+
+
 
 
   Widget formUI() {
@@ -472,7 +997,7 @@ class _Home extends State<Home> {
                                       //IR A DETALLE
                                       Apartamento objaux = Apartamento();
                                       objaux = widget.listApartamentos![index];
-
+                                      //CambiarPagina(objaux);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => Detalle(objaux)),
@@ -530,78 +1055,6 @@ class _Home extends State<Home> {
 
                   ),
             ),
-          //PARTE 5 PIE
-
-          Row(
-            children: [
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.search, color: Colors.black),
-                      onPressed: () {
-                        logoutFunction();
-                      }
-                  )
-              ),
-
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.favorite, color: Colors.black),
-                      onPressed: () {
-                        logoutFunction();
-                      }
-                  )
-              ),
-
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.airplanemode_active, color: Colors.black),
-                      onPressed: () {
-                        logoutFunction();
-                      }
-                  )
-              ),
-
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.message, color: Colors.black),
-                      onPressed: () {
-                        logoutFunction();
-                      }
-                  )
-              ),
-
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.search, color: Colors.black),
-                      onPressed: () {
-                        logoutFunction();
-                      }
-                  )
-              ),
-
-              Expanded(
-                  flex: 5,
-                  child:IconButton(
-                      icon: const Icon(Icons.person, color: Colors.black),
-                      onPressed: () {
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => usuario()),
-                        );
-
-                      }
-                  )
-              ),
-
-            ],
-          ),
-
         ],),
     );
 

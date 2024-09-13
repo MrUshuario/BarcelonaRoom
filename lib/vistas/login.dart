@@ -26,9 +26,6 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 class login extends StatefulWidget {
 
-  GoogleSignInAccount? _currentUser;
-  bool _isAuthorized = false; // has granted permissions?
-  String _contactText = '';
 
   //GlobalKey<FormState> keyForm = GlobalKey();
   TextEditingController formUsuarioCtrl = TextEditingController();
@@ -190,114 +187,117 @@ class _login extends State<login> {
 
 
   Widget formUI() {
-    return Column(
-      children: <Widget>[
+    final GoogleSignInAccount? user = _currentUser;
+    if (user != null) {
+      return Column(
+          children: <Widget>[
+            GestureDetector(
+                onTap: ()  {
+                  _handleSignIn();
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(10.0),
+                  alignment: Alignment.center,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    color: Color.fromARGB(255, 27, 65, 187),
+                  ),
+                  padding: const EdgeInsets.only(top: 16, bottom: 16),
+                  child: const Text("GOOGLE SIGN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500)),
+                )),
+          ],
+      );
+    } else {
+      return Column(
+        children: <Widget>[
 
-        const Text("prueba"),
+          Visibility(
+            visible: _isAuthorized,
+            child: const Text("AUTORIZADO"),
+          ),
 
+          GestureDetector(
+              onTap: ()  {
+                googlelogin();
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  color: Color.fromARGB(255, 27, 65, 187),
+                ),
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: const Text("GOOGLE SIGILO",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500)),
+              )),
 
-        GestureDetector(
-            onTap: ()  {
-              googlelogin();
-            },
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-                color: Color.fromARGB(255, 27, 65, 187),
-              ),
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
-              child: const Text("GOOGLE SIGILO",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500)),
-            )),
-
-        GestureDetector(
-            onTap: ()  {
-              _handleSignIn();
-            },
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-                color: Color.fromARGB(255, 27, 65, 187),
-              ),
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
-              child: const Text("GOOGLE SIGN",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500)),
-            )),
-
-
-        GestureDetector(
-            onTap: ()  {
-              googlelogin();
-            },
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-                color: Color.fromARGB(255, 27, 65, 187),
-              ),
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
-              child: const Text("SALIR",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500)),
-            )),
-
-        GestureDetector(
-            onTap: ()  {
-              //Navigator.pop(context); // Cierra el diálogo
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-                color: Color.fromARGB(255, 27, 65, 187),
-              ),
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
-              child: const Text("IR A HOME",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500)),
-            )),
+          GestureDetector(
+              onTap: ()  {
+                _handleSignIn();
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  color: Color.fromARGB(255, 27, 65, 187),
+                ),
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: const Text("GOOGLE SIGN",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500)),
+              )),
 
 
-            IconButton(
-                icon: Image.asset(Resources.google),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                }
-            )
+          GestureDetector(
+              onTap: ()  {
+                googlelogin();
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  color: Color.fromARGB(255, 27, 65, 187),
+                ),
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: const Text("SALIR",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500)),
+              )),
 
 
 
+          IconButton(
+              icon: Image.asset(Resources.google),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              }
+          )
 
+        ],
+      );
+    }
 
-      ],
-    );
   }
 
 

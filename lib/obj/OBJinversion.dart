@@ -1,32 +1,48 @@
-class Apartamento {
-  int? codigoApartamento;
-  String? descripcionApartamento; //CHARLA STRING
-  int? precioApartamento; //Condicion visita
-  String? urlimagen;
+class Inversion {
+  int? codigoInversion;
+  String? codigoFondo;
+  String? nombreInversion;
+  int? montoInversion;
+  double? porcentajeInteres;
+  int? montoBeneficioTotal;
+  String? fechaInversion;
 
-  Apartamento({this.codigoApartamento, this.descripcionApartamento, this.precioApartamento, this.urlimagen});
+  Inversion({
+    this.codigoInversion,
+    this.codigoFondo,
+    this.nombreInversion,
+    this.montoInversion,
+    this.porcentajeInteres,
+    this.montoBeneficioTotal,
+    this.fechaInversion
+  });
 
-  factory Apartamento.fromJson(dynamic json)  => Apartamento(
-    codigoApartamento: json['codigoApartamento'] as int?,
-    descripcionApartamento: json['descripcionApartamento'] as String?,
-    precioApartamento: json['precioApartamento'] as int?,
-    urlimagen: json['urlimagen'],
+  factory Inversion.fromJson(dynamic json)  => Inversion(
+    codigoInversion: json['codigoInversion'] as int?,
+    codigoFondo: json['codigoFondo'] as String?,
+    nombreInversion: json['nombreInversion'] as String?,
+    montoInversion: json['montoInversion'] as int?,
+    porcentajeInteres: json['porcentajeInteres'] as double?,
+    montoBeneficioTotal: json['montoBeneficioTotal'] as int?,
+    fechaInversion: json['fechaInversion'] as String?,
   );
 
-  static List<Apartamento> listFromJson(dynamic json) {
+  static List<Inversion> listFromJson(dynamic json) {
     var bienvenidaList = json as List;
-    List<Apartamento> items =
-    bienvenidaList.map((e) => Apartamento.fromJson(e)).toList();
+    List<Inversion> items =
+    bienvenidaList.map((e) => Inversion.fromJson(e)).toList();
     return items ?? [];
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "codigoApartamento": codigoApartamento,
-      "descripcionApartamento": descripcionApartamento,
-      "precioApartamento": precioApartamento,
-      "urlimagen": urlimagen,
-
+      "codigoInversion": codigoInversion,
+      "codigoFondo": codigoFondo,
+      "nombreInversion": nombreInversion,
+      "montoInversion":montoInversion,
+      "porcentajeInteres": porcentajeInteres,
+      "montoBeneficioTotal": montoBeneficioTotal,
+      "fechaInversion": fechaInversion,
     };
   }
   
