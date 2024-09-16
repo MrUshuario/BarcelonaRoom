@@ -261,9 +261,6 @@ class _Home extends State<Home> {
           },);
         }
     );
-
-
-
   }
 
   @override
@@ -528,45 +525,31 @@ class _Home extends State<Home> {
                           );
                           },
                             child:
+
+                            Padding(
+                            padding: const EdgeInsets.all(5), // POR ALGUN MOTIVO NO SE CENTRA ASI QUE PONGO POR EL MOMENTO
+                            child:
+
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
                                 SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-                                Text("${widget.listInversiones![index].codigoInversion}) Nombre: ${widget.listInversiones![index].nombreInversion}",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: const TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                                ),
-
-                                SizedBox(height: 20),
-
-                                Text(
-                                  "Inversion: ${widget.listInversiones![index].montoInversion}",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: const TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                                ),
-
-                                SizedBox(height: 20),
-
-                                Text(
-                                  "Fecha inversion: ${widget.listInversiones![index].fechaInversion}",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: const TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                                ),
+                                HelpersViewLetrasSubs.formItemsDesign(
+                                    "${widget.listInversiones![index].codigoInversion}) Nombre: "
+                                        "${widget.listInversiones![index].nombreInversion}"),
 
 
+                                HelpersViewLetrasSubs.formItemsDesign(
+                                    "Inversion: ${widget.listInversiones![index].montoInversion}"),
+
+
+                                HelpersViewLetrasSubs.formItemsDesign(
+                                    "Fecha inversion: ${widget.listInversiones![index].fechaInversion}"),
 
                               ],
+                            ),
                             ),
                         ),
                     );
@@ -584,7 +567,6 @@ class _Home extends State<Home> {
     return Container(
       child: Column(
           children: [
-
             Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
                 child:
@@ -595,9 +577,15 @@ class _Home extends State<Home> {
                       child: Container(
                         height: 100,
                         width: 100,
-                        decoration: BoxDecoration(
-                          color:  Colors.black,
-                          borderRadius: BorderRadius.circular(10),
+                        decoration: ShapeDecoration(
+                          //color: const Color(0xffEDF1F1),
+                          shape: RoundedRectangleBorder( // Define rounded rectangle shape
+                            borderRadius: BorderRadius.circular(10.0), // Adjust border radius
+                            side: const BorderSide( // Add border with desired properties
+                              color: Colors.black54, // Set border color to black
+                              width: 3.0, // Adjust border width (optional)
+                            ),
+                          ),
                         ),
                         child: Column(
                           // Add spacing between icon and text (optional)
@@ -605,7 +593,7 @@ class _Home extends State<Home> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.white),
+                              icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.black),
                               onPressed: () {
                               },
                             ),

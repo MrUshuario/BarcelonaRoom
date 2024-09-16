@@ -29,14 +29,25 @@ class _Inversiongeneral extends State<Inversiongeneral> {
   }
 
   void funcionAgregarMensualidad()  {
-    for (int i = 1; i <= 10; i++) {
 
-      Mensualidad objaux = Mensualidad();
-      objaux.codigomes = i;
-      objaux.mes = "Enero";
-      objaux.montopagado = 100+(i*10);
-      widget.listMensualidad.add(objaux);
-    }
+    Mensualidad objaux = Mensualidad();
+    objaux.codigomes = 1;
+    objaux.mes = "Enero";
+    objaux.montopagado = 100+(1*10);
+    widget.listMensualidad.add(objaux);
+
+    Mensualidad objaux2 = Mensualidad();
+    objaux2.codigomes = 2;
+    objaux2.mes = "Febrero";
+    objaux2.montopagado = 100+(2*10);
+    widget.listMensualidad.add(objaux2);
+
+    Mensualidad objaux3 = Mensualidad();
+    objaux3.codigomes = 3;
+    objaux3.mes = "Marzo";
+    objaux3.montopagado = 100+(3*10);
+    widget.listMensualidad.add(objaux3);
+
   }
 
 
@@ -95,9 +106,9 @@ class _Inversiongeneral extends State<Inversiongeneral> {
             ),
           ), */
 
-          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.030,),
 
-          Text("aaa",
+          Text("Ha contribuido con un total de: 900",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -108,7 +119,7 @@ class _Inversiongeneral extends State<Inversiongeneral> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           Text(
-            "aaa",
+            "ACEPTABLE",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(

@@ -30,7 +30,7 @@ class HelpersViewInputs{
           elevation: 0,
           shape: const RoundedRectangleBorder(
             side: BorderSide(
-              color: Colors.blue,
+              color: Colors.amber,
             ),
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),

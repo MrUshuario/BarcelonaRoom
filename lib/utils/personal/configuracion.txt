@@ -7,7 +7,9 @@ aqui tengo que escribir mi dominio (asegurarme de elegir solo android)
 gov.es.barcelona.approm
 gov.es.barcelona.approom.barcelonaroom
 
+//GRAFICOS
 https://pub.dev/packages/syncfusion_flutter_charts/install
+
 CHARTS / GRAFICOS
 
 Agregar firebase_core: ^3.4.0
