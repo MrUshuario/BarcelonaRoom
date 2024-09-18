@@ -12,7 +12,12 @@
           "package_name": "com.example.firebaseprueba"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "767436123138-b2nhppaijd1b602405ouieff8vusn08l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD1LeAqii10bxjXP93AYFXgPehI0H99k0g"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767436123138-b2nhppaijd1b602405ouieff8vusn08l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "767436123138-4oe0icjbp3n3ci1n3855s1mu67g1tsqo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseprueba"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "gov.es.barcelona.approom.barcelonaroom"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "767436123138-h6r7eh045vdp7rv2r2jmg5u7j7ncgmln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gov.es.barcelona.approom.barcelonaroom",
+            "certificate_hash": "1e6f6e95e4a6bb4e2b276a96401bcd5fb1898433"
+          }
+        },
+        {
+          "client_id": "767436123138-b2nhppaijd1b602405ouieff8vusn08l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD1LeAqii10bxjXP93AYFXgPehI0H99k0g"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767436123138-b2nhppaijd1b602405ouieff8vusn08l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "767436123138-4oe0icjbp3n3ci1n3855s1mu67g1tsqo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseprueba"
+              }
+            }
+          ]
         }
       }
     }
