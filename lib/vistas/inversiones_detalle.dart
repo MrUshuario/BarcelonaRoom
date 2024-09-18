@@ -138,16 +138,26 @@ class _Inversiondetalle extends State<Inversiondetalle> {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
+        backgroundColor: Resources.fondoBlanquiso,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+          ),
+        ),
         body: <Widget>[
           Stack(
           children: [
             Container(
               width: double.infinity,
               height: double.infinity,
-              child: Image.asset(
-                Resources.backgroundAzul, // Replace with your image path
-                fit: BoxFit.cover, // Adjust fit as needed
-              ),
             ),
 
             // Existing content with Center, SingleChildScrollView, and Container
@@ -171,10 +181,6 @@ class _Inversiondetalle extends State<Inversiondetalle> {
               Container(
                 width: double.infinity,
                 height: double.infinity,
-                child: Image.asset(
-                  Resources.backgroundAzul, // Replace with your image path
-                  fit: BoxFit.cover, // Adjust fit as needed
-                ),
               ),
 
               // Existing content with Center, SingleChildScrollView, and Container
@@ -249,7 +255,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
             ),
           ),
 
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           //BOTON FILTRO
@@ -333,7 +339,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
               )),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           Row(
@@ -363,10 +369,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
           //BOTON FILTRO
           GestureDetector(
               onTap: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+                ConfirmarDialog();
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),

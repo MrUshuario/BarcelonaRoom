@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
+import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
@@ -37,12 +38,120 @@ class _Detalle extends State<Detalle> {
 
   }
 
+  //ALERTDIALGO API
+  final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
+  void ConfirmarDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+
+              Image.asset(Resources.iconInfo),
+              SizedBox(width: 4), // Espacio entre el icono y el texto
+              const Expanded(
+                child: Text(
+                  '¿Desea confirmar la inversión?',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 20, // Tamaño de fuente deseado
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.start, // Alinea los botones a la izquierda
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    CargaDialog();
+                    Timer.periodic(Duration(seconds: 3), (time) async {
+                      _mostrarLoadingStreamController.add(true);
+                      time.cancel();
+                    });
+                    // Cierra el diálogo
+                  },
+                  child: const Text('Sí',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo
+                  },
+                  child: const Text('No',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+
+  }
+
+
+  void CargaDialog() {
+    bool mostrarLOADING = false;
+    showDialog(
+      barrierDismissible: mostrarLOADING,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            _mostrarLoadingStreamController.stream.listen((value) {
+              setState(() {
+                mostrarLOADING = value;
+              });
+            });
+
+            return AlertDialog(
+              contentPadding: EdgeInsets.all(0),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    HelpersViewAlertProgressCircle(
+                      mostrar: mostrarLOADING,
+                      texto: "Inversión realizada",
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
+        backgroundColor: Resources.fondoBlanquiso,
+        appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+          ),
+        ),
         body: <Widget>[
 
           //FORM1 DETALLE
@@ -51,14 +160,7 @@ class _Detalle extends State<Detalle> {
               Container(
                 width: double.infinity,
                 height: double.infinity,
-                child: Image.asset(
-                  Resources.backgroundAzul, // Replace with your image path
-                  fit: BoxFit.cover, // Adjust fit as needed
-                ),
               ),
-
-              // Existing content with Center, SingleChildScrollView, and Container
-              //Center( child:
               SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.95,
@@ -69,7 +171,6 @@ class _Detalle extends State<Detalle> {
                   ),
                 ),
               ),
-              // ),
             ],
           ),
 
@@ -79,10 +180,6 @@ class _Detalle extends State<Detalle> {
               Container(
                 width: double.infinity,
                 height: double.infinity,
-                child: Image.asset(
-                  Resources.backgroundAzul, // Replace with your image path
-                  fit: BoxFit.cover, // Adjust fit as needed
-                ),
               ),
 
               // Existing content with Center, SingleChildScrollView, and Container
@@ -169,7 +266,7 @@ class _Detalle extends State<Detalle> {
             ),
           ),
 
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           //BOTON FILTRO
@@ -211,63 +308,72 @@ class _Detalle extends State<Detalle> {
           Padding(
             padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
             child:
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xffEDF1F1),
-                      shape: RoundedRectangleBorder( // Define rounded rectangle shape
-                        borderRadius: BorderRadius.circular(10.0), // Adjust border radius
-                        side: const BorderSide( // Add border with desired properties
-                          color: Colors.black54, // Set border color to black
-                          width: 3.0, // Adjust border width (optional)
+                Card(
+                  elevation: 10,
+                  child:
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          /*
+                          decoration: ShapeDecoration(
+                            //color: const Color(0xffEDF1F1),
+                            shape: RoundedRectangleBorder( // Define rounded rectangle shape
+                              borderRadius: BorderRadius.circular(10.0), // Adjust border radius
+                              side: const BorderSide( // Add border with desired properties
+                                color: Colors.black54, // Set border color to black
+                                width: 3.0, // Adjust border width (optional)
+                              ),
+                            ),
+                          ), */
+                          child: Column(
+                            // Add spacing between icon and text (optional)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.attach_money, size: 50.0, color: Colors.black),
+                                onPressed: () {
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    child: Column(
-                      // Add spacing between icon and text (optional)
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.attach_money, size: 50.0, color: Colors.black),
-                          onPressed: () {
-                          },
-                        ),
-                      ],
-                    ),
+
+                      const Expanded(
+                        flex: 1,
+                        child: const SizedBox(height: 1.0),
+                      ),
+
+                      Expanded(
+                        flex: 7,
+                        child:
+
+                        Column(
+                          children: [
+                            HelpersViewLetrasSubs.formItemsDesign("Tu inversión actual es:"),
+                            const SizedBox(height: 5.0),
+                            HelpersViewLetrasSubs.formItemsDesign( "10000 E"),
+                          ],),
+                      ),
+                    ],
                   ),
                 ),
 
-                const Expanded(
-                  flex: 1,
-                  child: const SizedBox(height: 1.0),
-                ),
-
-                Expanded(
-                  flex: 7,
-                  child:
-
-                  Column(
-                    children: [
-                      HelpersViewLetrasSubs.formItemsDesign("Tus ahorros"),
-                      const SizedBox(height: 5.0),
-                      HelpersViewLetrasSubs.formItemsDesign( "10000 e"),
-                    ],),
-                ),
-              ],
-            ),
           ),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
 
           Row(
             children: [
-              const Text('Monto mínimo:', style: TextStyle(
+              const Text('Agregar Monto:', style: TextStyle(
                 fontSize: 12.0,
                 //color: Colors.white,
               ),),
@@ -288,15 +394,10 @@ class _Detalle extends State<Detalle> {
           ),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
           //BOTON FILTRO
           GestureDetector(
               onTap: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+                ConfirmarDialog();
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),

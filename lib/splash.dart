@@ -96,19 +96,9 @@ class _SplashPageState extends State<SplashPage> {
 
 
     Timer.periodic(Duration(seconds: 3), (time) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? nombreusuario;
-
-      setState(() {
-        PREFUsuario = prefs.getString('nombre') ?? "";
-      });
-
-      if(PREFUsuario == ""){
         _login();
-      } else {
-        _home();
-      }
       time.cancel();
+
     });
   }
 

@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/firebase_options.dart';
+import 'package:barcelonaroom/utils/helpersviewInputs.dart';
+import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,6 +42,32 @@ class login extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _login();
+}
+
+class PasswordVisibilityToggle extends StatefulWidget {
+  const PasswordVisibilityToggle({
+    Key? key,
+    required this.isPasswordVisible,
+    required this.onToggle,
+  }) : super(key: key);
+  final bool isPasswordVisible;
+  final VoidCallback onToggle;
+  @override
+  State<PasswordVisibilityToggle> createState() => _PasswordVisibilityToggleState();
+}
+
+class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        widget.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+      ),
+      onPressed: () {
+        widget.onToggle();
+      },
+    );
+  }
 }
 
 
@@ -78,10 +107,16 @@ class _login extends State<login> {
         options: DefaultFirebaseOptions.currentPlatform,);
   }
 
+  //FUNCION PRINCIPAL DEL LOGEO!
   Future<void> _handleSignIn() async {
     try {
       await _googleSignIn.signIn();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
     } catch (error) {
+      print("VALLA FALLO DE NUEVO");
       print(error);
     }
   }
@@ -201,7 +236,7 @@ class _login extends State<login> {
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
-                    color: Color.fromARGB(255, 27, 65, 187),
+                    color: Colors.amber,
                   ),
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
                   child: const Text("GOOGLE SIGN",
@@ -216,83 +251,218 @@ class _login extends State<login> {
       return Column(
         children: <Widget>[
 
+          Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                /*
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ), */
+                margin: EdgeInsets.only(top: 10),
+                child: Image.asset( Resources.loginlogo,
+                  width: 250,
+                  height: 60,),
+              )),
+
+          Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                //margin: EdgeInsets.only(bottom: 20),
+                child: Image.asset( Resources.siContigo,
+                  width: 250,
+                  height: 100,),
+              )),
+
+          //TESTEO
           Visibility(
             visible: _isAuthorized,
-            child: const Text("AUTORIZADO"),
+            child: const Text("AUTORIZADO TESTEO"),
+          ),
+
+          //ENTRADA SIGILOSA
+          /*
+          GestureDetector(
+              onTap: ()  {
+                googlelogin();
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  color: Color.fromARGB(255, 27, 65, 187),
+                ),
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: const Text("GOOGLE SIGILO TESTEO",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500)),
+              )),
+
+           */
+
+          HelpersViewInputs.formItemsDesignlogin(
+            "Usuario:", // Empty title (optional)
+            Center(
+              child: TextFormField(
+                controller: widget.formUsuarioCtrl,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Optional: Restrict input to digits
+                maxLength: 8,
+                decoration: InputDecoration(
+                  hintText: "Usuario", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+
+          Card(
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              //side: BorderSide(color: Color.fromARGB(255, 45, 55, 207)), // Red border
+              side: BorderSide(color: Colors.black), // Red border
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0), // Optional padding
+              child: Center( // Center the text field content
+                child: TextFormField(
+                  controller: widget.formClaveCtrl,
+                  obscureText: widget._isPasswordVisible,
+                  maxLength: 20,
+                  decoration: InputDecoration(
+                    hintText: "Ingrese su contraseña",
+                    counterText: "",
+                    suffixIcon: PasswordVisibilityToggle(
+                      isPasswordVisible: widget._isPasswordVisible,
+                      onToggle: () {
+                        setState(() {
+                          widget._isPasswordVisible = !widget._isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
 
           GestureDetector(
-              onTap: ()  {
-                googlelogin();
+              onTap: () async {
+                //CargaDialog();
+
+                String usuario = widget.formUsuarioCtrl.text!;
+                String contra = widget.formClaveCtrl.text!;
+
+                /*
+                ReponseInicioFinActividades resp = ReponseInicioFinActividades();
+                resp = await apiVersion.post_LoginUsuarios(usuario,contra);
+                print(resp.nroDoc);
+                if(resp.nroDoc != null){
+
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('name', resp.name!);
+                  await prefs.setString('apPaterno', resp.apPaterno!);
+                  await prefs.setString('apMaterno', resp.apMaterno!);
+                  await prefs.setString('nroDoc', resp.nroDoc!);
+                  await prefs.setString('typeUser', resp.typeUser!);
+                  if (resp.distrito != null) {
+                    await prefs.setString('distrito', resp.distrito!);
+                  } else {
+                    await prefs.setString('distrito', "No registrado");
+                  }
+                  //TALVEZ DEPARTAMENTO
+
+                  //GUARDAR DATOS
+
+                 */
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  Home()),
+                  );
+                  /*
+                }else {
+                  if(resp.name == "9999"){
+                    //ENCONTRO UN ERROR
+                    _mostrarLoadingStreamController.add(true);
+                    _mostrarLoadingStreamControllerTEXTO.add("Error en la base de datos");
+                    //UsuarioNoEncontrado( "Error en la base de datos");
+                  } else {
+                    //NO ENCONTRO
+                    _mostrarLoadingStreamController.add(true);
+                    _mostrarLoadingStreamControllerTEXTO.add("No se ha encontrado el usuario");
+                    //UsuarioNoEncontrado( "No se ha encontrado el usuario");
+                  }
+                } */
+
               },
               child: Container(
-                margin: const EdgeInsets.all(10.0),
+                //margin: const EdgeInsets.all(30.0),
+                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
                 alignment: Alignment.center,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
-                  color: Color.fromARGB(255, 27, 65, 187),
+                  color: Colors.amber,
                 ),
                 padding: const EdgeInsets.only(top: 16, bottom: 16),
-                child: const Text("GOOGLE SIGILO",
+                child: const Text("Ingresar",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
+                        color: Colors.black,
+                        fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),
 
           GestureDetector(
-              onTap: ()  {
-                _handleSignIn();
+              onTap: () async {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  Home()),
+                );
+
+
               },
               child: Container(
-                margin: const EdgeInsets.all(10.0),
+                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
                 alignment: Alignment.center,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
-                  color: Color.fromARGB(255, 27, 65, 187),
+                  color: Colors.amber,
                 ),
                 padding: const EdgeInsets.only(top: 16, bottom: 16),
-                child: const Text("GOOGLE SIGN",
+                child: const Text("Crear cuenta",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
+                        color: Colors.black,
+                        fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),
 
-
-          GestureDetector(
-              onTap: ()  {
-                googlelogin();
-              },
-              child: Container(
-                margin: const EdgeInsets.all(10.0),
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  color: Color.fromARGB(255, 27, 65, 187),
-                ),
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
-                child: const Text("SALIR",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500)),
-              )),
-
-
+          HelpersViewLetrasSubs.formItemsDesign2("Ingreso con Google"),
 
           IconButton(
-              icon: Image.asset(Resources.google),
-              onPressed: () {
+              icon: Image.asset(
+                  Resources.google,
+                width: double.maxFinite,
+                height: 50.0,),
+              onPressed: () async {
+                await _handleSignIn();
+                //POR EL MOMENTO
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),
                 );
+                //BORAR DESPUES
               }
-          )
+          ),
 
         ],
       );

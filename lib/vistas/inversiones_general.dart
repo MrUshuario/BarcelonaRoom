@@ -56,15 +56,25 @@ class _Inversiongeneral extends State<Inversiongeneral> {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
+        backgroundColor: Resources.fondoBlanquiso,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+          ),
+        ),
         body: Stack(
           children: [
             Container(
               width: double.infinity,
               height: double.infinity,
-              child: Image.asset(
-                Resources.backgroundAzul, // Replace with your image path
-                fit: BoxFit.cover, // Adjust fit as needed
-              ),
             ),
 
             // Existing content with Center, SingleChildScrollView, and Container
@@ -149,7 +159,7 @@ class _Inversiongeneral extends State<Inversiongeneral> {
 
 
 
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           //BOTON VOLVER

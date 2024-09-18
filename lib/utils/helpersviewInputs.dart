@@ -22,6 +22,26 @@ class HelpersViewInputs{
     );
   }
 
+  static Widget formItemsDesignlogin(String text, item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Card(
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.black,
+            //color: Theme.of(context).colorScheme.outline,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: ListTile(
+          leading: Text(text, style: const TextStyle(fontSize: 20.0)), // Use Text widget for text
+          title: item,
+        ),
+      ),
+    );
+  }
+
   static Widget formItemsDesignDNI(item, context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.35,

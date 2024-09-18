@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/obj/OBJinversion.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
+import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/departamento_detalle.dart';
+import 'package:barcelonaroom/vistas/usuarioperfil.dart';
 import 'package:barcelonaroom/vistas/inversiones_detalle.dart';
 import 'package:barcelonaroom/vistas/inversiones_general.dart';
 import 'package:barcelonaroom/vistas/login.dart';
@@ -103,35 +105,163 @@ class _Home extends State<Home> {
     }
   }
 
+  //ALERTDIALGO API
+  final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
+  void CargaDialog() {
+    bool mostrarLOADING = false;
+    showDialog(
+      barrierDismissible: mostrarLOADING,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            _mostrarLoadingStreamController.stream.listen((value) {
+              setState(() {
+                Navigator.pop(context);
+              });
+            });
+
+            return AlertDialog(
+              contentPadding: EdgeInsets.all(0),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    HelpersViewAlertProgressCircle(
+                      mostrar: mostrarLOADING,
+                      texto: "Búsqueda realizada",
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
   void filtro(String boton)  {
 
 
     setState(() {
 
-      widget.activadoCasa = false;
-      widget.activadoHabitacion = false;
-      widget.activadoComunitario = false;
-      widget.activadoAlquilados = false;
-      widget.activadoSinAlquilar= false;
-      widget.activadoGaraje = false;
-      widget.activadoZonaTuristica = false;
+
 
 
       switch (boton) {
         case "a":
-        widget.activadoCasa =           true;
+
+          if(widget.activadoCasa){
+            widget.activadoCasa = false;
+          } else {
+            widget.activadoCasa = true;
+
+            widget.activadoHabitacion = false;
+            widget.activadoComunitario = false;
+            widget.activadoAlquilados = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoGaraje = false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "b":
-        widget.activadoHabitacion =     true;
+
+          if(widget.activadoHabitacion){
+            widget.activadoHabitacion = false;
+          } else {
+            widget.activadoHabitacion = true;
+
+            widget.activadoCasa = false;
+            widget.activadoComunitario = false;
+            widget.activadoAlquilados = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoGaraje = false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "c":
-        widget.activadoComunitario =    true;
+
+          if(widget.activadoComunitario){
+            widget.activadoComunitario = false;
+          } else {
+            widget.activadoComunitario = true;
+
+            widget.activadoCasa = false;
+            widget.activadoHabitacion = false;
+            widget.activadoAlquilados = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoGaraje = false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "d":
-        widget.activadoAlquilados =     true;
+
+          if(widget.activadoAlquilados){
+            widget.activadoAlquilados = false;
+          } else {
+            widget.activadoAlquilados = true;
+
+            widget.activadoCasa = false;
+            widget.activadoHabitacion = false;
+            widget.activadoComunitario = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoGaraje = false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "e":
-        widget.activadoSinAlquilar =    true;
+
+          if(widget.activadoSinAlquilar){
+            widget.activadoSinAlquilar = false;
+          } else {
+            widget.activadoSinAlquilar = true;
+
+            widget.activadoCasa = false;
+            widget.activadoHabitacion = false;
+            widget.activadoComunitario = false;
+            widget.activadoAlquilados = false;
+            widget.activadoGaraje = false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "f":
-        widget.activadoGaraje =         true;
+
+          if(widget.activadoGaraje){
+            widget.activadoGaraje = false;
+          } else {
+            widget.activadoGaraje = true;
+
+            widget.activadoCasa = false;
+            widget.activadoHabitacion = false;
+            widget.activadoComunitario = false;
+            widget.activadoAlquilados = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoZonaTuristica = false;
+
+          }
+
         case "g":
-        widget.activadoZonaTuristica =  true;
+
+          if(widget.activadoZonaTuristica){
+            widget.activadoZonaTuristica = false;
+          } else {
+            widget.activadoZonaTuristica = true;
+
+            widget.activadoCasa = false;
+            widget.activadoHabitacion = false;
+            widget.activadoComunitario = false;
+            widget.activadoAlquilados = false;
+            widget.activadoSinAlquilar= false;
+            widget.activadoGaraje = false;
+
+          }
+
       }
     });
   }
@@ -433,34 +563,40 @@ class _Home extends State<Home> {
               children: [
                 Expanded(
                   flex: 4,
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color:  Colors.amber,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      // Add spacing between icon and text (optional)
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.black),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Inversiongeneral()),
-                            );
-                          },
+                  child:
+
+                  GestureDetector(
+                      onTap: ()   async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Inversiongeneral()),
+                        );
+                      },
+                      child:    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color:  Colors.amber,
+                          borderRadius: BorderRadius.circular(10),
                         ),
+                        child: const Column(
+                          // Add spacing between icon and text (optional)
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.account_box_outlined, size: 50.0, color: Colors.black,
+                            ),
+                            Text("Resumen General", style: TextStyle(color: Colors.black)), // Your text
+                            SizedBox(height: 5.0),
 
-                        const Text("Resumen General", style: TextStyle(color: Colors.black)), // Your text
-                        const SizedBox(height: 5.0),
-
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
                   ),
+
+
+
                 ),
 
                 const Expanded(
@@ -470,29 +606,33 @@ class _Home extends State<Home> {
 
                 Expanded(
                   flex: 4,
-                  child: Container(
+                  child:
+                  GestureDetector(
+                    onTap: ()   async {
+                      showfiltromodal();
+                    },
+                    child:
+                    Container(
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
                       color:  Colors.amber,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Column(
+                    child: const Column(
                       // Add spacing between icon and text (optional)
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.search, size: 50.0, color: Colors.black),
-                          onPressed: () {
-                            showfiltromodal();
-                          },
+                        Icon(
+                          Icons.search, size: 50.0, color: Colors.black,
                         ),
-                        const Text("Filtrar resultados", style: TextStyle(color: Colors.black)), // Your text
-                        const SizedBox(height: 5.0),
+                        Text("Filtrar resultados", style: TextStyle(color: Colors.black)), // Your text
+                        SizedBox(height: 5.0),
 
                       ],
                     ),
+                  ),
                   ),
                 ),
 
@@ -500,7 +640,7 @@ class _Home extends State<Home> {
             ),
           ),
 
-          HelpersViewLetrasSubs.formItemsDesignLineaAmarilla(),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           //
           Padding(
             padding: const EdgeInsets.all(5), // POR ALGUN MOTIVO NO SE CENTRA ASI QUE PONGO POR EL MOMENTO
@@ -554,7 +694,17 @@ class _Home extends State<Home> {
                         ),
                     );
                   },)
-                    : const Text('Aún no hay data para mostrar')
+                    :  Container(
+                  child:  Column(
+                      children: [
+                        Center(
+                          child: HelpersViewLetrasSubs.formItemsDesign(
+                              "Usted no ha hecho ninguna inversión"),
+                        )
+
+                      ]
+                  ),
+                )
 
             ),
           ),
@@ -565,72 +715,246 @@ class _Home extends State<Home> {
 
   Widget formUI3() {
     return Container(
-      child: Column(
+      child:
+        Padding(
+        padding: const EdgeInsets.only(top: 30.0, bottom: 8.0, left: 8.0, right: 8.0),
+    child:
+      Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
-                child:
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        decoration: ShapeDecoration(
-                          //color: const Color(0xffEDF1F1),
-                          shape: RoundedRectangleBorder( // Define rounded rectangle shape
-                            borderRadius: BorderRadius.circular(10.0), // Adjust border radius
-                            side: const BorderSide( // Add border with desired properties
-                              color: Colors.black54, // Set border color to black
-                              width: 3.0, // Adjust border width (optional)
-                            ),
-                          ),
-                        ),
-                        child: Column(
-                          // Add spacing between icon and text (optional)
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.account_box_outlined, size: 50.0, color: Colors.black),
-                              onPressed: () {
-                              },
-                            ),
-                          ],
-                        ),
+
+            Card(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      child: const Column(
+                        // Add spacing between icon and text (optional)
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                         Icon(Icons.house_rounded, size: 50.0, color: Colors.black),
+                        ],
                       ),
                     ),
+                  ),
 
-                    const Expanded(
-                      flex: 1,
-                      child: const SizedBox(height: 1.0),
+
+                  Expanded(
+                    flex: 5,
+                    child:
+                    Column(
+                      children: [
+                        HelpersViewLetrasSubs.formItemsDesign("$PREFname"),
+                      ],),
+                  ),
+
+                  Expanded(
+                    flex: 2,
+                    child:
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward, size: 50.0, color: Colors.black),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Usuario_perfil()),
+                        );
+                      },
                     ),
-
-                     Expanded(
-                      flex: 7,
-                      child:
-
-                      Column(
-                        children: [
-                          HelpersViewLetrasSubs.formItemsDesign("$PREFname"),
-                          const SizedBox(height: 5.0),
-                          HelpersViewLetrasSubs.formItemsDesign( "DNI: $PREFdni"),
-                        ],),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ),
 
+            const SizedBox(height: 10.0),
+            HelpersViewLetrasSubs.formItemsDesignLinea(),
+            const SizedBox(height: 10.0),
 
-            Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
-            child:
+            HelpersViewLetrasSubs.formItemsDesignBig("Configuración"),
+            //
+
+            GestureDetector(
+                onTap: ()   async {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => login()),
+                  );
+
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child:
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Column(
+                            // Add spacing between icon and text (optional)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.shield_outlined, size: 50.0, color: Colors.black),
+                                onPressed: () {
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child:
+                        Column(
+                          children: [
+                            HelpersViewLetrasSubs.formItemsDesign("Sesión y Seguridad"),
+                          ],),
+                      ),
+                    ],
+                  ),
+                )),
+            HelpersViewLetrasSubs.formItemsDesignLinea(),
+            const SizedBox(height: 10.0),
+            GestureDetector(
+                onTap: ()   async {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => login()),
+                  );
+
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child:
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Column(
+                            // Add spacing between icon and text (optional)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.language, size: 50.0, color: Colors.black),
+                                onPressed: () {
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child:
+                        Column(
+                          children: [
+                            HelpersViewLetrasSubs.formItemsDesign("Traddución"),
+                          ],),
+                      ),
+                    ],
+                  ),
+                )),
+            HelpersViewLetrasSubs.formItemsDesignLinea(),
+            const SizedBox(height: 10.0),
+            GestureDetector(
+                onTap: ()   async {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => login()),
+                  );
+
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child:
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Column(
+                            // Add spacing between icon and text (optional)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.wallet, size: 50.0, color: Colors.black),
+                                onPressed: () {
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child:
+                        Column(
+                          children: [
+                            HelpersViewLetrasSubs.formItemsDesign("Pagos y cobros"),
+                          ],),
+                      ),
+                    ],
+                  ),
+                )),
+            HelpersViewLetrasSubs.formItemsDesignLinea(),
+            const SizedBox(height: 10.0),
+            GestureDetector(
+                onTap: ()   async {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => login()),
+                  );
+
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child:
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Column(
+                            // Add spacing between icon and text (optional)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.campaign, size: 50.0, color: Colors.black),
+                                onPressed: () {
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child:
+                        Column(
+                          children: [
+                            HelpersViewLetrasSubs.formItemsDesign("Notificaciones"),
+                          ],),
+                      ),
+                    ],
+                  ),
+                )),
+            HelpersViewLetrasSubs.formItemsDesignLinea(),
+            const SizedBox(height: 10.0),
+
             Column(
               children: [
-
-                  HelpersViewLetrasSubs.formItemsDesignLinea(),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 15.0),
 
                 GestureDetector(
                     onTap: ()   async {
@@ -658,10 +982,12 @@ class _Home extends State<Home> {
                     )),
 
               ],),
-            ),
+
 
 
           ]),
+
+        ),
     );
   }
 
@@ -734,6 +1060,11 @@ class _Home extends State<Home> {
                     child:
                     GestureDetector(
                         onTap: () async {
+                          CargaDialog();
+                          Timer.periodic(Duration(seconds: 3), (time) async {
+                            _mostrarLoadingStreamController.add(true);
+                            time.cancel();
+                          });
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10.0),
@@ -741,12 +1072,12 @@ class _Home extends State<Home> {
                           decoration: ShapeDecoration(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0)),
-                            color: Color.fromARGB(255, 27, 65, 187),
+                            color: Colors.amber,
                           ),
                           padding: const EdgeInsets.only(top: 16, bottom: 16),
                           child: const Icon(
                           Icons.settings_applications, // Replace "e" with Icons.search
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         )),
                   )
@@ -1039,7 +1370,10 @@ class _Home extends State<Home> {
                                   ),
                                 );
                               },)
-                                : const Text('Aún no hay data para mostrar')
+                                : Center(
+                        child: HelpersViewLetrasSubs.formItemsDesign(
+                            "Seleccione los filtros para buscar"),
+                      )
 
                   ),
             ),

@@ -34,7 +34,7 @@ class HelpersViewAlertProgressCircle extends StatelessWidget {
                       height: height,
                       child: const CircularProgressIndicator(
                       backgroundColor: Colors.grey,
-                      valueColor: AlwaysStoppedAnimation(Colors.red),
+                      valueColor: AlwaysStoppedAnimation(Colors.amber),
                       strokeWidth: 10,
                     ),
                     ),

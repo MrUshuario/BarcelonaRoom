@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
 import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,31 +35,25 @@ class _Modelo_vacio extends State<Modelo_vacio> {
     return MaterialApp(
       debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
       home: Scaffold(
-        /*appBar: AppBar(
-          title: const Text(
-            Resources.usuario,
-            style: TextStyle(color: Colors.white),
+        backgroundColor: Resources.fondoBlanquiso,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
           ),
-          backgroundColor: Color.fromARGB(255, 27, 65, 187),
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.logout, color: Colors.white),
-                onPressed: () {
-                  logoutFunction();
-                }
-            )
-          ],
-        ), */
-        //drawer: const MenuLateral(),
+        ),
         body: Stack(
           children: [
             Container(
               width: double.infinity,
               height: double.infinity,
-              child: Image.asset(
-                Resources.backgroundAzul, // Replace with your image path
-                fit: BoxFit.cover, // Adjust fit as needed
-              ),
             ),
 
             // Existing content with Center, SingleChildScrollView, and Container
