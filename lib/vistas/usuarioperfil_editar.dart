@@ -1,0 +1,253 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:barcelonaroom/obj/OBJapartamentos.dart';
+import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
+import 'package:barcelonaroom/utils/helpersviewInputs.dart';
+import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
+import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+
+
+class Usuario_perfil extends StatefulWidget {
+
+  TextEditingController formNombre = TextEditingController();
+  TextEditingController formContra = TextEditingController();
+  bool _isPasswordVisible = true;
+
+  @override
+  State<StatefulWidget> createState() => _Usuario_perfil();
+}
+
+class PasswordVisibilityToggle extends StatefulWidget {
+  const PasswordVisibilityToggle({
+    Key? key,
+    required this.isPasswordVisible,
+    required this.onToggle,
+  }) : super(key: key);
+  final bool isPasswordVisible;
+  final VoidCallback onToggle;
+  @override
+  State<PasswordVisibilityToggle> createState() => _PasswordVisibilityToggleState();
+}
+
+class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        widget.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+      ),
+      onPressed: () {
+        widget.onToggle();
+      },
+    );
+  }
+}
+
+class _Usuario_perfil extends State<Usuario_perfil> {
+
+  @override
+  void initState() {
+    funcion();
+    super.initState();
+
+  }
+
+  void funcion()  {
+
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: true, //SACA LA BARRA DEBUG
+      home: Scaffold(
+        backgroundColor: Resources.fondoBlanquiso,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+          ),
+        ),
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+            ),
+
+            // Existing content with Center, SingleChildScrollView, and Container
+            //Center( child:
+            SingleChildScrollView(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  margin: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Form(
+                    //key: widget.keyForm,
+                    child: formUI(),
+                  ),
+                ),
+              ),
+           // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget formUI() {
+    return Container(
+        child: Column(
+        children: [
+
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
+            child:
+            Card(
+              elevation: 10,
+              child:
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      child: Column(
+                        // Add spacing between icon and text (optional)
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+
+                      Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      child:
+                      const CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        child: Text("A"),
+                        maxRadius: 30,
+                        foregroundImage: NetworkImage("enterImageUrl"),
+                      ),
+                      ),
+
+
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const Expanded(
+                    flex: 1,
+                    child: const SizedBox(height: 1.0),
+                  ),
+
+                  Expanded(
+                    flex: 7,
+                    child:
+
+                    Column(
+                      children: [
+                        HelpersViewLetrasSubs.formItemsDesign("Usuario AAA AAA"),
+                        const SizedBox(height: 5.0),
+                        HelpersViewLetrasSubs.formItemsDesign( "Correo: abcd@gmail.com"),
+                      ],),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+          HelpersViewLetrasSubs.formItemsDesign("Nombre y apellidos"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.person,
+            Center(
+              child: TextFormField(
+                controller: widget.formNombre,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 50,
+                decoration: const InputDecoration(
+                  hintText: "Nombre y apellidos", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+          HelpersViewLetrasSubs.formItemsDesign("Cambiar Contraseña"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.key,
+            Center( // Center the text field content
+              child: TextFormField(
+                controller: widget.formContra,
+                obscureText: widget._isPasswordVisible,
+                maxLength: 20,
+                decoration: InputDecoration(
+                  hintText: "Nueva Contraseña",
+                  counterText: "",
+                  suffixIcon: PasswordVisibilityToggle(
+                    isPasswordVisible: widget._isPasswordVisible,
+                    onToggle: () {
+                      setState(() {
+                        widget._isPasswordVisible = !widget._isPasswordVisible;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+          GestureDetector(
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  color: Colors.amber,
+                ),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: const Text("Modificar datos",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500)),
+              )),
+
+
+
+        ],),
+    );
+
+  }
+
+
+}
