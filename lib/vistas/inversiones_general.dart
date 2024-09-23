@@ -61,7 +61,7 @@ class _Inversiongeneral extends State<Inversiongeneral> {
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, size: 40.0, color: Colors.black),
             onPressed: () {
               Navigator.push(
                 context,

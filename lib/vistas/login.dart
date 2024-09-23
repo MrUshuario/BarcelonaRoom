@@ -4,6 +4,7 @@ import 'package:barcelonaroom/firebase_options.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/crear_cuenta.dart';
 import 'package:barcelonaroom/vistas/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -425,7 +426,7 @@ class _login extends State<login> {
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  Home()),
+                  MaterialPageRoute(builder: (context) =>  Crear_cuenta()),
                 );
 
 

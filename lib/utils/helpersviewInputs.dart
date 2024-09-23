@@ -42,6 +42,26 @@ class HelpersViewInputs{
     );
   }
 
+  static Widget formItemsDesignInput(IconData icon, item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Card(
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.black,
+            //color: Theme.of(context).colorScheme.outline,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: ListTile(
+          leading: Icon(icon, size: 20.0, color: Colors.black),
+          title: item,
+        ),
+      ),
+    );
+  }
+
   static Widget formItemsDesignDNI(item, context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.35,

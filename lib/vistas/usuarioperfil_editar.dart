@@ -6,6 +6,7 @@ import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/home.dart';
+import 'package:barcelonaroom/vistas/usuarioperfil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +14,22 @@ import 'package:flutter/services.dart';
 
 
 
-class Usuario_perfil extends StatefulWidget {
+class Usuario_perfileditar extends StatefulWidget {
 
-  TextEditingController formNombre = TextEditingController();
+  TextEditingController formNombre1 = TextEditingController();
+  TextEditingController formNombre2 = TextEditingController();
+  TextEditingController formApeP = TextEditingController();
+  TextEditingController formApeM = TextEditingController();
+  TextEditingController formDirrecion = TextEditingController();
   TextEditingController formContra = TextEditingController();
+  TextEditingController formContraRepetir = TextEditingController();
+  TextEditingController formContra2 = TextEditingController();
   bool _isPasswordVisible = true;
+  bool _isPasswordVisibleRepetir = true;
+  bool _isPasswordVisible2 = true;
 
   @override
-  State<StatefulWidget> createState() => _Usuario_perfil();
+  State<StatefulWidget> createState() => _Usuario_perfileditar();
 }
 
 class PasswordVisibilityToggle extends StatefulWidget {
@@ -49,7 +58,7 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
   }
 }
 
-class _Usuario_perfil extends State<Usuario_perfil> {
+class _Usuario_perfileditar extends State<Usuario_perfileditar> {
 
   @override
   void initState() {
@@ -77,7 +86,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) => Usuario_perfil()),
               );
             },
           ),
@@ -114,75 +123,82 @@ class _Usuario_perfil extends State<Usuario_perfil> {
         child: Column(
         children: [
 
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 8.0, right: 8.0),
-            child:
-            Card(
-              elevation: 10,
-              child:
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      child: Column(
-                        // Add spacing between icon and text (optional)
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-
-                      Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                      child:
-                      const CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: Text("A"),
-                        maxRadius: 30,
-                        foregroundImage: NetworkImage("enterImageUrl"),
-                      ),
-                      ),
-
-
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const Expanded(
-                    flex: 1,
-                    child: const SizedBox(height: 1.0),
-                  ),
-
-                  Expanded(
-                    flex: 7,
-                    child:
-
-                    Column(
-                      children: [
-                        HelpersViewLetrasSubs.formItemsDesign("Usuario AAA AAA"),
-                        const SizedBox(height: 5.0),
-                        HelpersViewLetrasSubs.formItemsDesign( "Correo: abcd@gmail.com"),
-                      ],),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          HelpersViewLetrasSubs.formItemsDesign("Nombre y apellidos"),
+          HelpersViewLetrasSubs.formItemsDesign("Primer Nombre"),
           HelpersViewInputs.formItemsDesignInput(
             Icons.person,
             Center(
               child: TextFormField(
-                controller: widget.formNombre,
+                controller: widget.formNombre1,
                 //readOnly: true, // Optional: Set to true if the field is read-only
                 maxLength: 50,
                 decoration: const InputDecoration(
-                  hintText: "Nombre y apellidos", // Hint text for empty field
+                  hintText: "Primer Nombre", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesign("Segundo Nombre"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.person,
+            Center(
+              child: TextFormField(
+                controller: widget.formNombre2,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 50,
+                decoration: const InputDecoration(
+                  hintText: "Segundo Nombre", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesign("Apellido Paterno"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.person,
+            Center(
+              child: TextFormField(
+                controller: widget.formApeP,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 50,
+                decoration: const InputDecoration(
+                  hintText: "Apellido Paterno", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesign("Apellido Materno"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.person,
+            Center(
+              child: TextFormField(
+                controller: widget.formApeM,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 50,
+                decoration: const InputDecoration(
+                  hintText: "Apellido Materno", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesign("Dirección"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.map,
+            Center(
+              child: TextFormField(
+                controller: widget.formDirrecion,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 250,
+                decoration: const InputDecoration(
+                  hintText: "Dirección", // Hint text for empty field
                   counterText: "", // Hides character counter (optional)
                 ),
               ),
@@ -190,6 +206,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
           ),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+          HelpersViewLetrasSubs.formItemsDesignLineaGris(),
 
           HelpersViewLetrasSubs.formItemsDesign("Cambiar Contraseña"),
           HelpersViewInputs.formItemsDesignInput(
@@ -207,6 +224,55 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                     onToggle: () {
                       setState(() {
                         widget._isPasswordVisible = !widget._isPasswordVisible;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          HelpersViewLetrasSubs.formItemsDesign("Repetir Nueva Contraseña"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.key,
+            Center( // Center the text field content
+              child: TextFormField(
+                controller: widget.formContraRepetir,
+                obscureText: widget._isPasswordVisibleRepetir,
+                maxLength: 20,
+                decoration: InputDecoration(
+                  hintText: "Repetir Nueva Contraseña",
+                  counterText: "",
+                  suffixIcon: PasswordVisibilityToggle(
+                    isPasswordVisible: widget._isPasswordVisibleRepetir,
+                    onToggle: () {
+                      setState(() {
+                        widget._isPasswordVisibleRepetir = !widget._isPasswordVisibleRepetir;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+
+          HelpersViewLetrasSubs.formItemsDesign("Anterior Contraseña"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.key,
+            Center( // Center the text field content
+              child: TextFormField(
+                controller: widget.formContra2,
+                obscureText: widget._isPasswordVisible2,
+                maxLength: 20,
+                decoration: InputDecoration(
+                  hintText: "Anterior Contraseña",
+                  counterText: "",
+                  suffixIcon: PasswordVisibilityToggle(
+                    isPasswordVisible: widget._isPasswordVisible2,
+                    onToggle: () {
+                      setState(() {
+                        widget._isPasswordVisible2 = !widget._isPasswordVisible2;
                       });
                     },
                   ),
@@ -235,14 +301,14 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   color: Colors.amber,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text("Modificar datos",
+                child: const Text("Confirmar Modificación",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),
 
-
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
         ],),
     );

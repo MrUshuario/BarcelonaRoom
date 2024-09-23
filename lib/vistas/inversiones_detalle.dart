@@ -47,7 +47,6 @@ class _Inversiondetalle extends State<Inversiondetalle> {
         return AlertDialog(
           title: Row(
             children: [
-
               Image.asset(Resources.iconInfo),
               SizedBox(width: 4), // Espacio entre el icono y el texto
               const Expanded(

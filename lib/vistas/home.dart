@@ -28,11 +28,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
 
+  //filtro
+  TextEditingController inversionmin = TextEditingController();
+  TextEditingController inversionmax = TextEditingController();
+
   //LISTA QUE SE MUESTRA PRIMERO
   List<Apartamento> listApartamentos = List.empty(growable: true);
   //LISTA QUE SE MUESTRA SEGUNDO
   List<Inversion> listInversiones = List.empty(growable: true);
-
+  List<Inversion> listInversionesAux = List.empty(growable: true);
   //DETALLE
   Apartamento formDetalle = Apartamento();
 
@@ -67,6 +71,18 @@ class _Home extends State<Home> {
 
   }
 
+  void aplicarfiltros(int min, int max) {
+
+
+    widget.listInversiones.removeWhere((inversion) =>
+    inversion.montoInversion! > max || inversion.montoInversion! < min
+    );
+  }
+
+  void borrarfiltros (){
+    widget.listInversionesAux = widget.listInversiones;
+  }
+
   Future<void> cargardatosiniciales()  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -82,6 +98,9 @@ class _Home extends State<Home> {
   }
 
   void cargardataprueba()  {
+    widget.inversionmin!.text = "0";
+    widget.inversionmax!.text = "90000";
+
     for (int i = 1; i <= 10; i++) {
 
       Apartamento objaux = Apartamento();
@@ -101,7 +120,7 @@ class _Home extends State<Home> {
       objaux2.fechaInversion = "12/09/2024";
       widget.listInversiones.add(objaux2);
 
-
+      widget.listInversionesAux = widget.listInversiones;
     }
   }
 
@@ -142,13 +161,7 @@ class _Home extends State<Home> {
 
 
   void filtro(String boton)  {
-
-
     setState(() {
-
-
-
-
       switch (boton) {
         case "a":
 
@@ -163,7 +176,6 @@ class _Home extends State<Home> {
             widget.activadoSinAlquilar= false;
             widget.activadoGaraje = false;
             widget.activadoZonaTuristica = false;
-
           }
 
         case "b":
@@ -266,10 +278,49 @@ class _Home extends State<Home> {
     });
   }
 
-  void showfiltromodal() {
+  void FiltromalDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Image.asset(Resources.iconInfo),
+              SizedBox(width: 4), // Espacio entre el icono y el texto
+              const Expanded(
+                child: Text(
+                  'Introdusca valores válidos',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 20, // Tamaño de fuente deseado
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cerrar',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
 
-    TextEditingController inversionmin = TextEditingController();
-    TextEditingController inversionmax = TextEditingController();
+  }
+
+  void showfiltromodal() {
 
     showDialog(
         context: context,
@@ -280,7 +331,7 @@ class _Home extends State<Home> {
                 return AlertDialog(
                     backgroundColor: Colors.white,
                     title: const Text(
-                    'Tipo de Registro:',
+                    'Filtrado por Monto:',
                     style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -301,7 +352,8 @@ class _Home extends State<Home> {
 
                     HelpersViewInputs.formItemsDesignDNI(
                         TextFormField(
-                          controller: inversionmin,
+                          controller: widget.inversionmin,
+                          //initialValue: '0',
                           decoration: const InputDecoration(
                             labelText: '€',
                           ),
@@ -309,9 +361,7 @@ class _Home extends State<Home> {
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           maxLength: 8,
                         ), context),
-
-                    Icon(Icons.monetization_on, size: 20.0, color: Colors.black),
-                    ],
+                    Icon(Icons.monetization_on, size: 20.0, color: Colors.black),],
                     ),
 
                     Row(
@@ -324,7 +374,8 @@ class _Home extends State<Home> {
 
                     HelpersViewInputs.formItemsDesignDNI(
                     TextFormField(
-                      controller: inversionmax,
+                      controller: widget.inversionmax,
+                     // initialValue: '0',
                       decoration: const InputDecoration(
                       labelText: '€',
                     ),
@@ -340,8 +391,23 @@ class _Home extends State<Home> {
 
                     //BOTON FILTRO
                     GestureDetector(
-                        onTap: () async {
-                          //await aplicar filtros();
+                        onTap: ()  {
+                          int valmin = 0;
+                          int valmax = 90000;
+
+
+                          if(widget.inversionmin.text != "" ) {
+                            valmin =int.parse(widget.inversionmin.text!);
+                          }
+                          if(widget.inversionmax.text != "")  {
+                            valmax =int.parse(widget.inversionmax.text!);
+                          }
+                          if( widget.inversionmax.text != "" && widget.inversionmin.text != "")  {
+                            aplicarfiltros(valmin, valmax);
+                          } else {
+                            FiltromalDialog();
+                          }
+
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -364,7 +430,7 @@ class _Home extends State<Home> {
 
                     GestureDetector(
                         onTap: () async {
-                          //await quitar filtros();
+                          borrarfiltros();
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -817,6 +883,7 @@ class _Home extends State<Home> {
                     ],
                   ),
                 )),
+
             HelpersViewLetrasSubs.formItemsDesignLinea(),
             const SizedBox(height: 10.0),
             GestureDetector(
@@ -855,7 +922,7 @@ class _Home extends State<Home> {
                         child:
                         Column(
                           children: [
-                            HelpersViewLetrasSubs.formItemsDesign("Traddución"),
+                            HelpersViewLetrasSubs.formItemsDesign("Tradución"),
                           ],),
                       ),
                     ],
