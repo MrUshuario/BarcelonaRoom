@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 
@@ -25,7 +26,10 @@ class Detalle extends StatefulWidget {
   State<StatefulWidget> createState() => _Detalle();
 }
 
+enum TipoPago { Visa, PayPal}
+
 class _Detalle extends State<Detalle> {
+  TipoPago? _TipoPago;
   int currentPageIndex = 0;
   @override
   void initState() {
@@ -40,7 +44,7 @@ class _Detalle extends State<Detalle> {
 
   //ALERTDIALGO API
   final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
-  void ConfirmarDialog() {
+  void ConfirmarDialog(String monto, String palabra) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -50,11 +54,11 @@ class _Detalle extends State<Detalle> {
 
               Image.asset(Resources.iconInfo),
               SizedBox(width: 4), // Espacio entre el icono y el texto
-              const Expanded(
+               Expanded(
                 child: Text(
-                  '¿Desea confirmar la inversión?',
+                  '¿Desea confirmar la $palabra de: $monto€?',
                   textAlign: TextAlign.start,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20, // Tamaño de fuente deseado
                   ),
                 ),
@@ -68,12 +72,7 @@ class _Detalle extends State<Detalle> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    CargaDialog();
-                    Timer.periodic(Duration(seconds: 3), (time) async {
-                      _mostrarLoadingStreamController.add(true);
-                      time.cancel();
-                    });
-                    // Cierra el diálogo
+                    SeleccionMetodo();
                   },
                   child: const Text('Sí',
                     style: TextStyle(
@@ -96,6 +95,113 @@ class _Detalle extends State<Detalle> {
       },
     );
 
+  }
+
+  void SeleccionMetodo(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: const Text(
+                'Método de Pago:',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: Column(
+                  children: [
+
+                    Row(
+                      children: [
+
+                        const Expanded(
+                          flex: 3,
+                          child: Icon(FontAwesomeIcons.ccVisa, size: 50.0, color: Colors.black),
+                        ),
+
+                        HelpersViewLetrasSubs.formItemsDesignGris("VISA"),
+
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:  Radio<TipoPago>(
+                            value: TipoPago.Visa,
+                            groupValue: _TipoPago,
+                            onChanged: (TipoPago? value) {
+                              setState(() {
+                                _TipoPago = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+
+                        const Expanded(
+                          flex: 3,
+                          child: Icon(FontAwesomeIcons.ccPaypal, size: 50.0, color: Colors.black),
+                        ),
+
+                        HelpersViewLetrasSubs.formItemsDesignGris("PayPal"),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:  Radio<TipoPago>(
+                            value: TipoPago.PayPal,
+                            groupValue: _TipoPago,
+                            onChanged: (TipoPago? value) {
+                              setState(() {
+                                _TipoPago = value;
+                              });
+                            },),
+                        ),
+                      ],
+                    ),
+
+                    GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          CargaDialog();
+                          Timer.periodic(Duration(seconds: 3), (time) async {
+                            _mostrarLoadingStreamController.add(true);
+                            time.cancel();
+                          });
+
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                          alignment: Alignment.center,
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                            color: Colors.amber,
+                          ),
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: const Text("Continuar",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500)),
+                        )),
+
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
 
@@ -236,8 +342,8 @@ class _Detalle extends State<Detalle> {
             alignment: Alignment.center,
             child: //widget.formData?.urlimagen
             Image.network(
-              widget.formData?.urlimagen != null
-                  ? widget.formData!.urlimagen!
+              widget.formData?.imagen != null
+                  ? widget.formData!.imagen!
                   : 'path/to/placeholder_image.jpg',
               width: 200.0,
               height: 200.0,
@@ -247,7 +353,7 @@ class _Detalle extends State<Detalle> {
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          Text("${widget.formData?.codigoApartamento} Descripción: ${widget.formData?.descripcionApartamento}",
+          Text("${widget.formData?.codigoApartamento} Descripción: ${widget.formData?.descripcion}",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -258,7 +364,7 @@ class _Detalle extends State<Detalle> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           Text(
-            "Precio: ${widget.formData?.precioApartamento}",
+            "Precio: ${widget.formData?.precio}",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -397,7 +503,9 @@ class _Detalle extends State<Detalle> {
           //BOTON FILTRO
           GestureDetector(
               onTap: () async {
-                ConfirmarDialog();
+                String monto = widget.inversion!.text;
+                String palabra = "Inversión";
+                ConfirmarDialog(monto, palabra);
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),

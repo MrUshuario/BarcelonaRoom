@@ -1,8 +1,20 @@
+import 'dart:io';
+import 'package:barcelonaroom/database/database.dart';
 import 'package:barcelonaroom/splash.dart';
-import 'package:barcelonaroom/vistas/login.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart';
 
-void main() {
+GetIt getIt = GetIt.instance;
+
+void main() async {
+
+  HttpOverrides.global = MyHttpOverrides();
+  getIt.registerSingletonAsync<Client>(() async => await Future(() => Client()));
+ //getIt.registerSingletonAsync<LocationRepository>(() async => await Future(() => LocationRepositoryImpl()));
+ //getIt.registerSingletonAsync<DevicesInfoPlusRepository>(() async => await Future(() => DevicesInfoPlusRepositoryImpl()));
+  //getIt.registerSingletonAsync<apiprovider_menuOpciones>(() async => await Future(() => apiprovider_menuOpciones()));
+  getIt.registerSingletonAsync<AppDatabase>(() async => await $FloorAppDatabase.databaseBuilder('siContigo.db').build());
   runApp(const MyApp());
 }
 
@@ -34,42 +46,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-                onTap: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  login()),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(10.0),
-                  alignment: Alignment.center,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    color: Color(0xFFD60000),
-                  ),
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
-                  child: const Text("LOGIN",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500)),
-                ))
 
-          ],
-        ),
-      ), */
     );
+  }
+}
+
+///////ME LO PASO MIGUEL: CREA UN CERTIFICADO DE CONFIANZA POR DEFAULT A LA LIBRERIA HTTP
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
 

@@ -196,16 +196,16 @@ class _Crear_cuenta extends State<Crear_cuenta> {
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          HelpersViewLetrasSubs.formItemsDesign("Dirreción"),
+          HelpersViewLetrasSubs.formItemsDesign("Dirección"),
           HelpersViewInputs.formItemsDesignInput(
             Icons.map,
             Center(
               child: TextFormField(
                 controller: widget.formDirrecion,
                 //readOnly: true, // Optional: Set to true if the field is read-only
-                maxLength: 50,
+                maxLength: 250,
                 decoration: const InputDecoration(
-                  hintText: "Dirreción", // Hint text for empty field
+                  hintText: "Dirección", // Hint text for empty field
                   counterText: "", // Hides character counter (optional)
                 ),
               ),

@@ -24,6 +24,8 @@ git push -u origin main
 keytool -genkey -v -keystore C:\Users\Edgar\Downloads\keystoreroom.jks  -storetype JKS -keyalg RSA -keysize 2048 -validity 10000  -alias room
 clave: barcelona
 
+flutter packages pub run build_runner build
+
 Store: C:\Users\Edgar\.android\debug.keystore
 Alias: AndroidDebugKey
 MD5: 2C:F6:F6:66:30:E2:84:F9:7B:98:B2:E8:A7:0D:6F:21

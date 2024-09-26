@@ -15,9 +15,9 @@ class Modelo_vacio extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _Modelo_vacio();
 }
-
+enum TipoEmprendimiento {Si, No}
 class _Modelo_vacio extends State<Modelo_vacio> {
-
+  TipoEmprendimiento? _TipoEmprendimiento;
   @override
   void initState() {
     funcion();

@@ -1,5 +1,8 @@
-class Inversion {
-  int? codigoInversion;
+class AportacionEmpresarial {
+  int? codigoInversion; //LLAVE
+  int? codigoApartamento; //FK OBJapartamentos
+  int? codigoaportacion;  //FK OBJimporte
+  int? codigoUsuario; //FK OBJUsuario
   String? codigoFondo;
   String? nombreInversion;
   int? montoInversion;
@@ -7,8 +10,11 @@ class Inversion {
   int? montoBeneficioTotal;
   String? fechaInversion;
 
-  Inversion({
+  AportacionEmpresarial({
     this.codigoInversion,
+    this.codigoApartamento, //FK
+    this.codigoaportacion,  //FK
+    this.codigoUsuario, //FK
     this.codigoFondo,
     this.nombreInversion,
     this.montoInversion,
@@ -17,8 +23,11 @@ class Inversion {
     this.fechaInversion
   });
 
-  factory Inversion.fromJson(dynamic json)  => Inversion(
+  factory AportacionEmpresarial.fromJson(dynamic json)  => AportacionEmpresarial(
     codigoInversion: json['codigoInversion'] as int?,
+    codigoApartamento: json['codigoApartamento'] as int?,
+    codigoaportacion: json['codigoaportacion'] as int?,
+    codigoUsuario: json['codigoUsuario'] as int?,
     codigoFondo: json['codigoFondo'] as String?,
     nombreInversion: json['nombreInversion'] as String?,
     montoInversion: json['montoInversion'] as int?,
@@ -27,16 +36,19 @@ class Inversion {
     fechaInversion: json['fechaInversion'] as String?,
   );
 
-  static List<Inversion> listFromJson(dynamic json) {
+  static List<AportacionEmpresarial> listFromJson(dynamic json) {
     var bienvenidaList = json as List;
-    List<Inversion> items =
-    bienvenidaList.map((e) => Inversion.fromJson(e)).toList();
+    List<AportacionEmpresarial> items =
+    bienvenidaList.map((e) => AportacionEmpresarial.fromJson(e)).toList();
     return items ?? [];
   }
 
   Map<String, dynamic> toMap() {
     return {
       "codigoInversion": codigoInversion,
+      "codigoApartamento": codigoApartamento,
+      "codigoaportacion": codigoaportacion,
+      "codigoUsuario": codigoUsuario,
       "codigoFondo": codigoFondo,
       "nombreInversion": nombreInversion,
       "montoInversion":montoInversion,

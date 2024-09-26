@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/obj/OBJinversion.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
@@ -8,6 +9,7 @@ import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/departamento_detalle.dart';
+import 'package:barcelonaroom/vistas/opciones_cartera.dart';
 import 'package:barcelonaroom/vistas/usuarioperfil.dart';
 import 'package:barcelonaroom/vistas/inversiones_detalle.dart';
 import 'package:barcelonaroom/vistas/inversiones_general.dart';
@@ -18,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,15 +31,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
 
+  //API
+  //registerLazySingleton
+  //final _appDatabase = GetIt.I.get<AppDatabase>();
+  //apiprovider_formulario apiForm = GetIt.I.get<apiprovider_formulario>();
+  //apiprovider_formulario apiForm= apiprovider_formulario();
+
   //filtro
   TextEditingController inversionmin = TextEditingController();
   TextEditingController inversionmax = TextEditingController();
 
+  //Searchbar
+  late SearchController controllerSearch;
+
   //LISTA QUE SE MUESTRA PRIMERO
   List<Apartamento> listApartamentos = List.empty(growable: true);
   //LISTA QUE SE MUESTRA SEGUNDO
-  List<Inversion> listInversiones = List.empty(growable: true);
-  List<Inversion> listInversionesAux = List.empty(growable: true);
+  List<AportacionEmpresarial> listInversiones = List.empty(growable: true);
+  List<AportacionEmpresarial> listInversionesAux = List.empty(growable: true);
   //DETALLE
   Apartamento formDetalle = Apartamento();
 
@@ -105,12 +117,12 @@ class _Home extends State<Home> {
 
       Apartamento objaux = Apartamento();
       objaux.codigoApartamento = i;
-      objaux.urlimagen = "https://picsum.photos/250?image=3";
-      objaux.descripcionApartamento = "Por el momento";
-      objaux.precioApartamento = (i+1)*100;
+      objaux.imagen = "https://picsum.photos/250?image=3";
+      objaux.descripcion = "Por el momento";
+      objaux.precio = ((i+1)*100).toString();
       widget.listApartamentos.add(objaux);
 
-      Inversion objaux2 = Inversion();
+      AportacionEmpresarial objaux2 = AportacionEmpresarial();
       objaux2.codigoInversion = i;
       objaux2.codigoFondo = "A0BC$i";
       objaux2.nombreInversion = "Comprado Habitación";
@@ -119,7 +131,6 @@ class _Home extends State<Home> {
       //objaux2.montoBeneficioTotal = (i+1)*100;
       objaux2.fechaInversion = "12/09/2024";
       widget.listInversiones.add(objaux2);
-
       widget.listInversionesAux = widget.listInversiones;
     }
   }
@@ -722,7 +733,7 @@ class _Home extends State<Home> {
                         child: InkWell(
                         onTap: () {
                           //IR A DETALLE
-                          Inversion objaux = Inversion();
+                          AportacionEmpresarial objaux = AportacionEmpresarial();
                           objaux = widget.listInversiones![index];
                           //CambiarPagina(objaux);
                           Navigator.push(
@@ -935,7 +946,7 @@ class _Home extends State<Home> {
 
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => login()),
+                    MaterialPageRoute(builder: (context) =>  Opcionescartera()),
                   );
 
                 },
@@ -1105,14 +1116,16 @@ class _Home extends State<Home> {
                             ],*/
                         );
                       },
-                      suggestionsBuilder: (BuildContext context, SearchController controller){
-                        return List<ListTile>.generate(5, (int index) {
-                          final String item = 'item $index';
+                      suggestionsBuilder: (BuildContext context, controllerSearch){
+                        return List<ListTile>.generate(Resources.DistritosLima.length, (int index) {
+                          final String item = Resources.DistritosLima[index];
                           return ListTile(
                             title: Text(item),
                             onTap: (){
                               setState(() {
-                                controller.closeView(item);
+                                controllerSearch.closeView(item);
+                                print("XDDD");
+                                print(controllerSearch.text);
                               });
                             },
                           );
@@ -1127,11 +1140,15 @@ class _Home extends State<Home> {
                     child:
                     GestureDetector(
                         onTap: () async {
+
+                          String textobuscar = widget.controllerSearch.text;
+
                           CargaDialog();
-                          Timer.periodic(Duration(seconds: 3), (time) async {
-                            _mostrarLoadingStreamController.add(true);
-                            time.cancel();
-                          });
+                          //CARGAR API
+                          //List<Apartamento> PadronEntity  = await widget.apiForm.get_DescargarApartamento(textobuscar);
+                          //TERMINANDO
+                          _mostrarLoadingStreamController.add(true);
+
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10.0),
@@ -1143,7 +1160,7 @@ class _Home extends State<Home> {
                           ),
                           padding: const EdgeInsets.only(top: 16, bottom: 16),
                           child: const Icon(
-                          Icons.settings_applications, // Replace "e" with Icons.search
+                          Icons.search, // Replace "e" with Icons.search
                           color: Colors.black,
                         ),
                         )),
@@ -1395,8 +1412,8 @@ class _Home extends State<Home> {
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(10.0), // Adjust as desired
                                           child: Image.network(
-                                            widget.listApartamentos![index].urlimagen != null
-                                                ? widget.listApartamentos![index].urlimagen!
+                                            widget.listApartamentos![index].imagen != null
+                                                ? widget.listApartamentos![index].imagen!
                                                 : 'path/to/placeholder_image.jpg',
                                             width: double.maxFinite,
                                             height: 200.0,
@@ -1410,7 +1427,7 @@ class _Home extends State<Home> {
 
                                           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-                                          Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcionApartamento}",
+                                          Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcion}",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                             style: const TextStyle(
@@ -1421,7 +1438,7 @@ class _Home extends State<Home> {
                                           SizedBox(height: 20),
 
                                           Text(
-                                            "Precio: ${widget.listApartamentos![index].precioApartamento}",
+                                            "Precio: ${widget.listApartamentos![index].precio}",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                             style: const TextStyle(
