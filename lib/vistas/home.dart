@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:barcelonaroom/database/database.dart';
 import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/obj/OBJinversion.dart';
@@ -33,16 +34,16 @@ class Home extends StatefulWidget {
 
   //API
   //registerLazySingleton
-  //final _appDatabase = GetIt.I.get<AppDatabase>();
+  final _appDatabase = GetIt.I.get<AppDatabase>();
   //apiprovider_formulario apiForm = GetIt.I.get<apiprovider_formulario>();
-  //apiprovider_formulario apiForm= apiprovider_formulario();
+  apiprovider_formulario apiForm= apiprovider_formulario();
+
+  String distritobuscar = "";
 
   //filtro
   TextEditingController inversionmin = TextEditingController();
   TextEditingController inversionmax = TextEditingController();
 
-  //Searchbar
-  late SearchController controllerSearch;
 
   //LISTA QUE SE MUESTRA PRIMERO
   List<Apartamento> listApartamentos = List.empty(growable: true);
@@ -1104,9 +1105,11 @@ class _Home extends State<Home> {
                               EdgeInsets.symmetric(horizontal: 16)),
                           onTap: (){
                             controller.openView();
+                            widget.distritobuscar = controller.text;
                           },
                           onChanged: (_){
                             controller.openView();
+                            widget.distritobuscar = controller.text;
                           },
                           leading: const Icon(Icons.search),
                           /*trailing: <Widget>[
@@ -1116,16 +1119,17 @@ class _Home extends State<Home> {
                             ],*/
                         );
                       },
-                      suggestionsBuilder: (BuildContext context, controllerSearch){
+                      suggestionsBuilder: (BuildContext context, controller){
                         return List<ListTile>.generate(Resources.DistritosLima.length, (int index) {
                           final String item = Resources.DistritosLima[index];
                           return ListTile(
                             title: Text(item),
                             onTap: (){
                               setState(() {
-                                controllerSearch.closeView(item);
-                                print("XDDD");
-                                print(controllerSearch.text);
+                                controller.closeView(item);
+                                print("PRUEBA AAA");
+                                widget.distritobuscar = controller.text;
+                                print(controller.text);
                               });
                             },
                           );
@@ -1141,11 +1145,12 @@ class _Home extends State<Home> {
                     GestureDetector(
                         onTap: () async {
 
-                          String textobuscar = widget.controllerSearch.text;
+                          String textobuscar = widget.distritobuscar;
 
                           CargaDialog();
                           //CARGAR API
-                          //List<Apartamento> PadronEntity  = await widget.apiForm.get_DescargarApartamento(textobuscar);
+                          List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento("Molina");
+                          widget.listApartamentos = ApartamentoEntity;
                           //TERMINANDO
                           _mostrarLoadingStreamController.add(true);
 
