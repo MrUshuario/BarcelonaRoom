@@ -567,23 +567,23 @@ class _Home extends State<Home> {
               currentPageIndex = index;
             });
           },
-          indicatorColor: Colors.amber,
+          indicatorColor: Resources.AzulTema,
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[
 
             NavigationDestination(
-              selectedIcon: Icon(Icons.home),
-              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home, color: Colors.white),
+              icon: Icon(Icons.home_outlined, color: Colors.black),
               label: 'Departamentos',
             ),
             NavigationDestination(
-              selectedIcon: Icon(Icons.monetization_on),
-              icon: Icon(Icons.monetization_on_outlined),
+              selectedIcon: Icon(Icons.monetization_on, color: Colors.white),
+              icon: Icon(Icons.monetization_on_outlined, color: Colors.black),
               label: 'Inversiones',
             ),
             NavigationDestination(
-              selectedIcon: Icon(Icons.account_box_rounded),
-              icon: Icon(Icons.account_box_outlined),
+              selectedIcon: Icon(Icons.account_box_rounded, color: Colors.white),
+              icon: Icon(Icons.account_box_outlined, color: Colors.black),
               label: 'Cuenta',
             ),
           ],
@@ -654,7 +654,7 @@ class _Home extends State<Home> {
                         height: 100,
                         width: 100,
                         decoration: BoxDecoration(
-                          color:  Colors.amber,
+                          color:  Resources.AzulTema,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Column(
@@ -663,9 +663,9 @@ class _Home extends State<Home> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              Icons.account_box_outlined, size: 50.0, color: Colors.black,
+                              Icons.account_box_outlined, size: 50.0, color: Colors.white,
                             ),
-                            Text("Resumen General", style: TextStyle(color: Colors.black)), // Your text
+                            Text("Resumen General", style: TextStyle(color: Colors.white)), // Your text
                             SizedBox(height: 5.0),
 
                           ],
@@ -694,7 +694,7 @@ class _Home extends State<Home> {
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
-                      color:  Colors.amber,
+                      color:  Resources.AzulTema,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Column(
@@ -703,9 +703,9 @@ class _Home extends State<Home> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.search, size: 50.0, color: Colors.black,
+                          Icons.search, size: 50.0, color: Colors.white,
                         ),
-                        Text("Filtrar resultados", style: TextStyle(color: Colors.black)), // Your text
+                        Text("Filtrar resultados", style: TextStyle(color: Colors.white)), // Your text
                         SizedBox(height: 5.0),
 
                       ],
@@ -1050,12 +1050,12 @@ class _Home extends State<Home> {
                       decoration: ShapeDecoration(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
-                        color: widget.botoniconDesactivado,
+                        color: Resources.AzulTema,
                       ),
                       padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: const Text("Cerrar Sesion",
                           style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w500)),
                     )),
@@ -1161,7 +1161,7 @@ class _Home extends State<Home> {
                           decoration: ShapeDecoration(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0)),
-                            color: Colors.amber,
+                            color: Resources.AzulTema,
                           ),
                           padding: const EdgeInsets.only(top: 16, bottom: 16),
                           child: const Icon(

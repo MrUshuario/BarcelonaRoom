@@ -184,7 +184,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                           decoration: ShapeDecoration(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0)),
-                            color: Colors.amber,
+                            color: Resources.AzulTema,
                           ),
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: const Text("Continuar",
@@ -312,7 +312,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
               currentPageIndex = index;
             });
           },
-          indicatorColor: Colors.amber,
+          indicatorColor: Resources.AzulTema,
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[
 
@@ -377,12 +377,12 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Volver al menú",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),
@@ -435,7 +435,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Invertir",
@@ -486,7 +486,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Retirar",

@@ -176,12 +176,12 @@ class _Inversiongeneral extends State<Inversiongeneral> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Volver al menú",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),

@@ -1,3 +1,4 @@
+import 'package:barcelonaroom/utils/resources.dart';
 import 'package:flutter/material.dart';
 
 class HelpersViewInputs{
@@ -68,11 +69,11 @@ class HelpersViewInputs{
       padding: const EdgeInsets.symmetric(vertical: 7),
       child: Card(
           elevation: 0,
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             side: BorderSide(
-              color: Colors.amber,
+              color: Resources.AzulTema,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
           ),
           child: ListTile(
               title: item

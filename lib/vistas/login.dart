@@ -237,7 +237,7 @@ class _login extends State<login> {
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
-                    color: Colors.amber,
+                    color: Resources.AzulTema,
                   ),
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
                   child: const Text("GOOGLE SIGN",
@@ -411,12 +411,12 @@ class _login extends State<login> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 16, bottom: 16),
                 child: const Text("Ingresar",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),
@@ -437,12 +437,12 @@ class _login extends State<login> {
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
-                  color: Colors.amber,
+                  color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 16, bottom: 16),
                 child: const Text("Crear cuenta",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),

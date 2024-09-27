@@ -2,14 +2,16 @@ import 'dart:ui';
 
 class Resources {
 
+  static const String loginLogo2 =    "assets/android1024.png";
   static const String backgroundAzul =    "assets/bg2.png";
   static const String iconInfo =          "assets/info.png";
   static const String fondo =             "assets/bg.png";
-  static const String loginLogo =         "assets/loginLogo.png";
   static const String google =            "assets/google.png";
-  static const String siContigo = 'assets/logoIcon.jpg';
-  static const String loginlogo = 'assets/loginLogo.png';
+  static const String siContigo = 'assets/logoIcon.png';
+  static const String loginlogo = 'assets/loginlogo.png';
+
   static const Color fondoBlanquiso = const Color.fromARGB(255, 245, 245, 245);
+  static const Color AzulTema = const Color.fromARGB(255, 64, 82, 214);
 
   static const List<String> DistritosLima = [
     "Lima",

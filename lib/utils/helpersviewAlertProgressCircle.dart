@@ -1,3 +1,4 @@
+import 'package:barcelonaroom/utils/resources.dart';
 import 'package:barcelonaroom/vistas/home.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,9 @@ class HelpersViewAlertProgressCircle extends StatelessWidget {
                Container(
                       width: width,
                       height: height,
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                       backgroundColor: Colors.grey,
-                      valueColor: AlwaysStoppedAnimation(Colors.amber),
+                      valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
                       strokeWidth: 10,
                     ),
                     ),

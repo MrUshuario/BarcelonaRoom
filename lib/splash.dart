@@ -44,20 +44,20 @@ class _SplashPageState extends State<SplashPage> {
                     child: Container(
                       margin: EdgeInsets.only(top: 100),
                       child: Image.asset(
-                        Resources.loginLogo,
+                        Resources.loginlogo,
                         width: 250,
                         height: 175,
                       ),
                     )),
-                /*
+
                 Align(
                     alignment: Alignment.center,
                     child: Container(
-                      width: 222,
-                      height: 65,
+                      width: 515,
+                      height: 255,
                       margin: EdgeInsets.all(20),
-                      child: Image.asset(Resources.pension65),
-                    )),
+                      child: Image.asset(Resources.loginLogo2),
+                    )), /*
                 Align(
                   //alignment: Alignment.topCenter,
                     child: Container(
