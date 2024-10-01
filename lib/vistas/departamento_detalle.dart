@@ -353,7 +353,7 @@ class _Detalle extends State<Detalle> {
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          Text("${widget.formData?.codigoApartamento} Descripción: ${widget.formData?.descripcion}",
+          Text("${widget.formData?.idDepartamento} Descripción: ${widget.formData?.descripcion}",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(

@@ -96,7 +96,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Apartamento` (`codigoApartamento` INTEGER PRIMARY KEY AUTOINCREMENT, `ubigeo` TEXT, `descripcion` TEXT, `amenidades` TEXT, `caracteristicas` TEXT, `precio` TEXT, `area` TEXT, `imagen` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `Apartamento` (`idDepartamento` INTEGER PRIMARY KEY AUTOINCREMENT, `ubigeo` TEXT, `descripcion` TEXT, `amenidades` TEXT, `caracteristicas` TEXT, `precio` TEXT, `area` TEXT, `imagen` TEXT)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,7 +120,7 @@ class _$FormDataModelDaoApartamento extends FormDataModelDaoApartamento {
             database,
             'Apartamento',
             (Apartamento item) => <String, Object?>{
-                  'codigoApartamento': item.codigoApartamento,
+                  'idDepartamento': item.idDepartamento,
                   'ubigeo': item.ubigeo,
                   'descripcion': item.descripcion,
                   'amenidades': item.amenidades,
@@ -142,7 +142,7 @@ class _$FormDataModelDaoApartamento extends FormDataModelDaoApartamento {
   Future<List<Apartamento>> findFormDataModel() async {
     return _queryAdapter.queryList('SELECT * FROM Apartamento',
         mapper: (Map<String, Object?> row) => Apartamento(
-            codigoApartamento: row['codigoApartamento'] as int?,
+            idDepartamento: row['idDepartamento'] as int?,
             ubigeo: row['ubigeo'] as String?,
             descripcion: row['descripcion'] as String?,
             amenidades: row['amenidades'] as String?,

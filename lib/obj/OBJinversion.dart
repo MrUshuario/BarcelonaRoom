@@ -1,6 +1,6 @@
 class AportacionEmpresarial {
   int? codigoInversion; //LLAVE
-  int? codigoApartamento; //FK OBJapartamentos
+  int? idDepartamento; //FK OBJapartamentos
   int? codigoaportacion;  //FK OBJimporte
   int? codigoUsuario; //FK OBJUsuario
   String? codigoFondo;
@@ -12,7 +12,7 @@ class AportacionEmpresarial {
 
   AportacionEmpresarial({
     this.codigoInversion,
-    this.codigoApartamento, //FK
+    this.idDepartamento, //FK
     this.codigoaportacion,  //FK
     this.codigoUsuario, //FK
     this.codigoFondo,
@@ -25,7 +25,7 @@ class AportacionEmpresarial {
 
   factory AportacionEmpresarial.fromJson(dynamic json)  => AportacionEmpresarial(
     codigoInversion: json['codigoInversion'] as int?,
-    codigoApartamento: json['codigoApartamento'] as int?,
+    idDepartamento: json['idDepartamento'] as int?,
     codigoaportacion: json['codigoaportacion'] as int?,
     codigoUsuario: json['codigoUsuario'] as int?,
     codigoFondo: json['codigoFondo'] as String?,
@@ -46,7 +46,7 @@ class AportacionEmpresarial {
   Map<String, dynamic> toMap() {
     return {
       "codigoInversion": codigoInversion,
-      "codigoApartamento": codigoApartamento,
+      "idDepartamento": idDepartamento,
       "codigoaportacion": codigoaportacion,
       "codigoUsuario": codigoUsuario,
       "codigoFondo": codigoFondo,

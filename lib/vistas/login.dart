@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -111,7 +112,21 @@ class _login extends State<login> {
   //FUNCION PRINCIPAL DEL LOGEO!
   Future<void> _handleSignIn() async {
     try {
-      await _googleSignIn.signIn();
+      _currentUser = await _googleSignIn.signIn();
+
+      if (_currentUser != null) {
+        String? username = _currentUser?.displayName;
+        String? correoname = _currentUser?.email;
+        if (username != null) {
+          // Use the username as needed
+          print("Username: $username");
+          print("Correoname: $correoname");
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('name', username!);
+          await prefs.setString('Correoname', correoname!);
+        }
+      }
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Home()),
@@ -229,6 +244,7 @@ class _login extends State<login> {
           children: <Widget>[
             GestureDetector(
                 onTap: ()  {
+                  //BOTON GOOGLE
                   _handleSignIn();
                 },
                 child: Container(

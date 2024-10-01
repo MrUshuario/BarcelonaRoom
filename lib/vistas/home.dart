@@ -73,7 +73,7 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   int currentPageIndex = 0;
   String? PREFname; //1er nombre 2do nombre apellidos
-  String? PREFdni;
+  //String? PREFcorreo;
 
 
   @override
@@ -100,7 +100,7 @@ class _Home extends State<Home> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
-      PREFdni = prefs.getString('dni') ?? "00000000";
+      //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
     });
   }
 
@@ -110,18 +110,25 @@ class _Home extends State<Home> {
     await prefs.setString('dni', "");
   }
 
-  void cargardataprueba()  {
+  Future<void> cargardataprueba()  async {
     widget.inversionmin!.text = "0";
     widget.inversionmax!.text = "90000";
 
+    List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento("");
+    setState(() {
+      widget.listApartamentos = ApartamentoEntity;
+    });
+
+
     for (int i = 1; i <= 10; i++) {
 
+      /*
       Apartamento objaux = Apartamento();
-      objaux.codigoApartamento = i;
+      objaux.idDepartamento = i;
       objaux.imagen = "https://picsum.photos/250?image=3";
       objaux.descripcion = "Por el momento";
       objaux.precio = ((i+1)*100).toString();
-      widget.listApartamentos.add(objaux);
+      widget.listApartamentos.add(objaux); */
 
       AportacionEmpresarial objaux2 = AportacionEmpresarial();
       objaux2.codigoInversion = i;
@@ -1105,18 +1112,35 @@ class _Home extends State<Home> {
                               EdgeInsets.symmetric(horizontal: 16)),
                           onTap: (){
                             controller.openView();
+
                             widget.distritobuscar = controller.text;
+                            print("DISTRITO:");
+                            print(widget.distritobuscar);
                           },
                           onChanged: (_){
                             controller.openView();
                             widget.distritobuscar = controller.text;
+                            print("DISTRITO2:");
+                            print(widget.distritobuscar);
                           },
-                          leading: const Icon(Icons.search),
-                          /*trailing: <Widget>[
-                              Tooltip(
-                                message: ,
-                              )
-                            ],*/
+                          leading: HelpersViewLetrasSubs.formItemsDesignGrisSinexpanded("Distrito:"),
+
+                          trailing: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.search_sharp),
+                              onPressed: () async {
+
+                                String textobuscar = controller.text;
+                                CargaDialog();
+                                //CARGAR API
+                                List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento(textobuscar);
+                                widget.listApartamentos = ApartamentoEntity;
+                                //TERMINANDO
+                                _mostrarLoadingStreamController.add(true);
+
+                              }
+                            ),
+                          ],
                         );
                       },
                       suggestionsBuilder: (BuildContext context, controller){
@@ -1145,14 +1169,15 @@ class _Home extends State<Home> {
                     GestureDetector(
                         onTap: () async {
 
+                          /*
                           String textobuscar = widget.distritobuscar;
-
+                          print(textobuscar);
                           CargaDialog();
                           //CARGAR API
-                          List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento("Molina");
+                          List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento(textobuscar);
                           widget.listApartamentos = ApartamentoEntity;
                           //TERMINANDO
-                          _mostrarLoadingStreamController.add(true);
+                          _mostrarLoadingStreamController.add(true); */
 
                         },
                         child: Container(
@@ -1165,7 +1190,7 @@ class _Home extends State<Home> {
                           ),
                           padding: const EdgeInsets.only(top: 16, bottom: 16),
                           child: const Icon(
-                          Icons.search, // Replace "e" with Icons.search
+                          Icons.format_line_spacing, // Replace "e" with Icons.search
                           color: Colors.black,
                         ),
                         )),
@@ -1432,7 +1457,7 @@ class _Home extends State<Home> {
 
                                           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-                                          Text("${widget.listApartamentos![index].codigoApartamento} Descripción: ${widget.listApartamentos![index].descripcion}",
+                                          Text("${widget.listApartamentos![index].idDepartamento} ${widget.listApartamentos![index].descripcion}",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                             style: const TextStyle(

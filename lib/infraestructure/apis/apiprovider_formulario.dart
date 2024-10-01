@@ -10,11 +10,13 @@ class apiprovider_formulario {
 
 
   final client = GetIt.I.get<Client>();
-  final api_get_login_usuario       = apisResources.REST_LOGIN_USUARIO;
-  final api_get_busqueda_listar        = apisResources.REST_BUSQUEDA_LISTAR_HABITACION;
-  final api_get_detalle_producto     = apisResources.REST_DETALLE_PRODUCTO;
-  final api_get_listar_usuarios     = apisResources.REST_LISTAR_USUARIOS;
-
+  final api_get_busqueda_listar_general               = apisResources.REST_BUSQUEDA_LISTAR_GENERAL;
+  final api_get_busqueda_listar                       = apisResources.REST_BUSQUEDA_LISTAR_HABITACION;
+  final api_get_detalle_producto                      = apisResources.REST_habitaciondetalle;
+  final api_get_listar_departamento_detalle           = apisResources.REST_BUSQUEDA_LISTAR_DESCRIPCION;
+  final api_get_inversiones                           = apisResources.REST_inversiones;
+  final api_get_usuariosdeinversiones 		            = apisResources.REST_usuariosdeinversiones;
+  final api_get_listar_usuarios_inversiones           = apisResources.REST_LISTAR_USUARIOS_INVERSIONES;
 
 
 
@@ -52,7 +54,7 @@ class apiprovider_formulario {
     final Map<String, dynamic> bodyData = {'idFormato': "ingresar login futuro"};
     try {
       print("post_Login");
-      String url_login = api_get_login_usuario;
+      String url_login = "api_get_login_usuario";
       Uri uri = Uri.parse(url_login);
       final response = await client.post(
         uri,
@@ -82,8 +84,12 @@ class apiprovider_formulario {
 
       //SharedPreferences prefs = await SharedPreferences.getInstance();
       //String token = prefs.getString('token') ?? "ERROR";
-      print("iniciando post_DescargarApartamento...");
       String url_login = "$api_get_busqueda_listar$distrito";
+      print("iniciando post_DescargarApartamento...");
+      if ( distrito == ""){
+        url_login = api_get_busqueda_listar_general;
+      }
+
       Uri uri = Uri.parse(url_login);
       final response = await client.get(
         uri,
@@ -93,15 +99,16 @@ class apiprovider_formulario {
       );
 
       if (response.statusCode == 200) {
-        print("response login2...${response.body}");
+        print("response DEPARTAMENTO...${response.body}");
+        //List<dynamic> datapre = jsonDecode(response.body);
         final Map<String, dynamic> data = jsonDecode(response.body);
         //DEVOLVER DATOS LOGIN
         //return Apartamento.listFromJson(data['object']);
-        return Apartamento.listFromJson(data);
+        return Apartamento.listFromJson(data['habitaciones']);
       } else if (response.statusCode == 401) {
         List<Apartamento> tipo = [];
         Apartamento obj = Apartamento();
-        obj.codigoApartamento = 999999;
+        obj.idDepartamento = 999999;
         tipo.add(obj);
         return  tipo;
       } else {

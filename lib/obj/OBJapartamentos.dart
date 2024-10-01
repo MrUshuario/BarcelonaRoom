@@ -3,7 +3,7 @@ import 'package:floor/floor.dart';
 @entity
 class Apartamento {
   @PrimaryKey(autoGenerate: true)
-  int? codigoApartamento;
+  int? idDepartamento;
   String? ubigeo;
   String? descripcion;
   String? amenidades;
@@ -13,7 +13,7 @@ class Apartamento {
   String? imagen;
 
   Apartamento({
-    this.codigoApartamento,
+    this.idDepartamento,
     this.ubigeo,
     this.descripcion,
     this.amenidades,
@@ -24,7 +24,7 @@ class Apartamento {
   });
 
   factory Apartamento.fromJson(dynamic json)  => Apartamento(
-    codigoApartamento: json['codigoApartamento'] as int?,
+    idDepartamento: json['idDepartamento'] as int?,
     ubigeo: json['ubigeo'] as String?,
     descripcion: json['descripcion'] as String?,
     amenidades: json['amenidades'] as String?,
@@ -43,7 +43,7 @@ class Apartamento {
 
   Map<String, dynamic> toMap() {
     return {
-      "codigoApartamento": codigoApartamento,
+      "idDepartamento": idDepartamento,
       "ubigeo":ubigeo,
       "descripcion":descripcion,
       "amenidades":amenidades,

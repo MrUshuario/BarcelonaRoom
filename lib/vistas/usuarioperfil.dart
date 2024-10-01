@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -51,16 +52,23 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 }
 
 class _Usuario_perfil extends State<Usuario_perfil> {
+  String? PREFname; //1er nombre 2do nombre apellidos
+  String? PREFcorreo;
+
 
   @override
   void initState() {
-    funcion();
+    cargardata();
     super.initState();
 
   }
 
-  void funcion()  {
-
+  Future<void> cargardata()  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
+      PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
+    });
   }
 
 
@@ -141,7 +149,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                         backgroundColor: Colors.blue,
                         child: Text("A"),
                         maxRadius: 30,
-                        foregroundImage: NetworkImage("enterImageUrl"),
+                        //foregroundImage: NetworkImage("enterImageUrl"),
                       ),
                       ),
 
@@ -158,7 +166,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
 
                     Column(
                       children: [
-                        HelpersViewLetrasSubs.formItemsDesign("Edgar Lenon Poma Chávez"),
+                        HelpersViewLetrasSubs.formItemsDesign(PREFname!),
                       ],),
                   ),
                 ],
@@ -270,7 +278,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   child:
                   Column(
                     children: [
-                      HelpersViewLetrasSubs.formItemsDesign("lenonpoma@gmail.com"),
+                      HelpersViewLetrasSubs.formItemsDesign(PREFcorreo!),
                     ],),
                 ),
               ],
@@ -332,9 +340,9 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text("Modificar datos",
+                child: const Text("Modificar datos a",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),

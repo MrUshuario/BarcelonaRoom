@@ -45,6 +45,19 @@ class HelpersViewLetrasSubs {
         );
   }
 
+  static Widget formItemsDesignGrisSinexpanded(String text) {
+    return Text(
+            text,
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              fontSize: 14.0,
+              color: Colors.black54,
+              //color: Colors.white,
+            ),
+          );
+
+  }
+
   static Widget formItemsDesignSub(String text) {
     return   Row(
       mainAxisAlignment: MainAxisAlignment.start, // Align content to the left
