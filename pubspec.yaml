@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.18.1  #LENGUAJE
   get_it: ^7.7.0 #SINGLETON
   sqflite: ^2.3.3+1
+  image_picker: ^1.0.0
 
 
 

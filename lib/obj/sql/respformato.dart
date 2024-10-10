@@ -1,12 +1,12 @@
 
-class ApiRequestEstudiante {
+class respFormato {
   String? coMensaje;
   String? descMensaje;
 
-  ApiRequestEstudiante.fromJson(dynamic json) {
+  respFormato.fromJson(dynamic json) {
     coMensaje = json['coMensaje'];
     descMensaje = json['deMensaje'];
   }
 
-  ApiRequestEstudiante({this.coMensaje, this.descMensaje});
+  respFormato({this.coMensaje, this.descMensaje});
 }

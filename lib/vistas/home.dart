@@ -71,8 +71,14 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  bool mostrarCargar = true;
   int currentPageIndex = 0;
   String? PREFname; //1er nombre 2do nombre apellidos
+  String? PREFtipo;
+
+  //VISTAS SEGUN TIPO USUARIO
+  bool VistaUsuarioIntermediario= false;
+  bool VistaUsuarioDepartamento = false;
   //String? PREFcorreo;
 
 
@@ -100,22 +106,34 @@ class _Home extends State<Home> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
+      PREFtipo = prefs.getString('tipoUsuario') ?? "INVERSOR";
       //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
     });
+
+    if(PREFtipo == "INTERMEDIARIO"){
+      VistaUsuarioIntermediario = true;
+    } else  if(PREFtipo == "DEPARTAMENTO"){
+      VistaUsuarioDepartamento = true;
+    }
+
   }
 
   void SalirCuenta() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('name',"USUARIO PRUEBA");
     await prefs.setString('dni', "");
+    await prefs.setString('tipoUsuario', "");
   }
 
   Future<void> cargardataprueba()  async {
     widget.inversionmin!.text = "0";
     widget.inversionmax!.text = "90000";
 
+
     List<Apartamento> ApartamentoEntity  = await widget.apiForm.get_DescargarApartamento("");
+    //_mostrarLoadingStreamController.add(true);
     setState(() {
+      mostrarCargar = false;
       widget.listApartamentos = ApartamentoEntity;
     });
 
@@ -856,9 +874,125 @@ class _Home extends State<Home> {
             const SizedBox(height: 10.0),
             HelpersViewLetrasSubs.formItemsDesignLinea(),
             const SizedBox(height: 10.0),
+            //
+
+            Visibility(
+              visible: VistaUsuarioIntermediario,
+              child:
+                Column(
+                children: [
+                HelpersViewLetrasSubs.formItemsDesignBig("Intermediario"),
+
+                  GestureDetector(
+                      onTap: ()   async {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => login()),
+                        );
+
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child:
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                child: Column(
+                                  // Add spacing between icon and text (optional)
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.monetization_on, size: 50.0, color: Colors.black),
+                                      onPressed: () {
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 5,
+                              child:
+                              Column(
+                                children: [
+                                  HelpersViewLetrasSubs.formItemsDesign("Bancos"),
+                                ],),
+                            ),
+                          ],
+                        ),
+                      )),
+
+                  HelpersViewLetrasSubs.formItemsDesignLinea(),
+                  const SizedBox(height: 10.0),
+
+                ],
+            ),
+          ),
+
+            Visibility(
+              visible: VistaUsuarioDepartamento ,
+              child:
+              Column(
+              children: [
+              HelpersViewLetrasSubs.formItemsDesignBig("Mis Departamentos"),
+
+                GestureDetector(
+                    onTap: ()   async {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => login()),
+                      );
+
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child:
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              child: Column(
+                                // Add spacing between icon and text (optional)
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.house, size: 50.0, color: Colors.black),
+                                    onPressed: () {
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child:
+                            Column(
+                              children: [
+                                HelpersViewLetrasSubs.formItemsDesign("Registro"),
+                              ],),
+                          ),
+                        ],
+                      ),
+                    )),
+
+                HelpersViewLetrasSubs.formItemsDesignLinea(),
+                const SizedBox(height: 10.0),
+
+              ],
+            )
+            ),
+
 
             HelpersViewLetrasSubs.formItemsDesignBig("Configuración"),
-            //
+
 
             GestureDetector(
                 onTap: ()   async {
@@ -949,6 +1083,7 @@ class _Home extends State<Home> {
                 )),
             HelpersViewLetrasSubs.formItemsDesignLinea(),
             const SizedBox(height: 10.0),
+            /*
             GestureDetector(
                 onTap: ()   async {
 
@@ -993,6 +1128,7 @@ class _Home extends State<Home> {
                 )),
             HelpersViewLetrasSubs.formItemsDesignLinea(),
             const SizedBox(height: 10.0),
+            */
             GestureDetector(
                 onTap: ()   async {
 
@@ -1412,7 +1548,9 @@ class _Home extends State<Home> {
 
 
           //PARTE 3 CUERPO
-
+          //Visibility(
+          //visible: mostrarCargar!,
+          //child:
             Padding(
                 padding: const EdgeInsets.only(left: 10), // POR ALGUN MOTIVO NO SE CENTRA ASI QUE PONGO POR EL MOMENTO
                 child:
@@ -1444,10 +1582,20 @@ class _Home extends State<Home> {
                                           child: Image.network(
                                             widget.listApartamentos![index].imagen != null
                                                 ? widget.listApartamentos![index].imagen!
-                                                : 'path/to/placeholder_image.jpg',
+                                                : 'https://picsum.photos/250?image=3',
                                             width: double.maxFinite,
                                             height: 200.0,
                                             fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              // Handle the error here
+                                              return
+                                                //Center(child: Text('Error loading image'));
+                                                Image.network('https://picsum.photos/250?image=3',
+                                                  width: double.maxFinite,
+                                                  height: 200.0,
+                                                  fit: BoxFit.cover
+                                                );
+                                            },
                                           ),
                                         ),
 
@@ -1466,16 +1614,7 @@ class _Home extends State<Home> {
                                           ),
 
                                           SizedBox(height: 20),
-
-                                          Text(
-                                            "Precio: ${widget.listApartamentos![index].precio}",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                              fontSize: 15.0,
-                                            ),
-                                          ),
-
+                                          HelpersViewLetrasSubs.formItemsDesignSubSinexpandir(widget.listApartamentos![index].precio!, "€"),
                                           SizedBox(height: 20),
 
                                         ],
@@ -1487,10 +1626,28 @@ class _Home extends State<Home> {
                                 : Center(
                         child: HelpersViewLetrasSubs.formItemsDesign(
                             "Seleccione los filtros para buscar"),
-                      )
+                      ),
+
 
                   ),
             ),
+          //),
+
+          Visibility(
+              visible: mostrarCargar,
+              child: Container(
+                width: MediaQuery.of(context).size.height * 0.080,
+                height: MediaQuery.of(context).size.height * 0.080,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
+                  strokeWidth: 10,
+                ),
+              ),
+          ),
+
+
+
         ],),
     );
 

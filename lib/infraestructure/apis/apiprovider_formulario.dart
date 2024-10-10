@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
+import 'package:barcelonaroom/obj/OBJapartamentosDetalle.dart';
 import 'package:barcelonaroom/obj/OBJusuarios.dart';
+import 'package:barcelonaroom/obj/sql/respformato.dart';
 import 'package:barcelonaroom/utils/resources_apis.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
@@ -17,6 +19,8 @@ class apiprovider_formulario {
   final api_get_inversiones                           = apisResources.REST_inversiones;
   final api_get_usuariosdeinversiones 		            = apisResources.REST_usuariosdeinversiones;
   final api_get_listar_usuarios_inversiones           = apisResources.REST_LISTAR_USUARIOS_INVERSIONES;
+
+  final api_post_enviarUsuario                        = apisResources.REST_ENVIAR_USUARIO;
 
 
 
@@ -85,7 +89,7 @@ class apiprovider_formulario {
       //SharedPreferences prefs = await SharedPreferences.getInstance();
       //String token = prefs.getString('token') ?? "ERROR";
       String url_login = "$api_get_busqueda_listar$distrito";
-      print("iniciando post_DescargarApartamento...");
+      print("iniciando get_DescargarApartamento...");
       if ( distrito == ""){
         url_login = api_get_busqueda_listar_general;
       }
@@ -118,6 +122,70 @@ class apiprovider_formulario {
     } catch (e) {
       List<Apartamento> tipo = List.empty();
       return  tipo;
+    }
+  }
+
+  //DESCARGAR APARTAMENTO
+  Future<respFormato> post_EnviarUsuario(usuariotrabajador usuario) async {
+    try {
+
+      String url_login = "$api_post_enviarUsuario";
+      print("iniciando post_EnviarUsuario...");
+
+      Uri uri = Uri.parse(url_login);
+      final response = await client.post(
+        uri,
+        body: json.encode(usuario.toMap()),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return respFormato.fromJson(json.decode(response.body));
+      } else {
+        respFormato obj = respFormato();
+        return  obj;
+      }
+    } catch (e) {
+      respFormato obj = respFormato();
+      obj.coMensaje = "Ocurrio un error en el envio";
+      return  obj;
+    }
+  }
+
+  //DESCARGAR APARTAMENTO DETALLE
+  Future<ApartamentoDetalle> get_DescargarApartamentoDETALLE(int? idapartamento) async {
+    try {
+
+      //idapartamento
+      String url_login = "$api_get_detalle_producto";
+      print("iniciando get_DescargarApartamentoDETALLE...");
+
+      Uri uri = Uri.parse(url_login);
+      final response = await client.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("response get_DescargarApartamentoDETALLE...${response.body}");
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        //DEVOLVER DATOS LOGIN
+        return ApartamentoDetalle.fromJson(data);
+      } else if (response.statusCode == 401) {
+        ApartamentoDetalle obj = ApartamentoDetalle();
+        obj.id = 999999;
+        return  obj;
+      } else {
+        ApartamentoDetalle obj = ApartamentoDetalle();
+        return  obj;
+      }
+    } catch (e) {
+      ApartamentoDetalle obj = ApartamentoDetalle();
+      return  obj;
     }
   }
 

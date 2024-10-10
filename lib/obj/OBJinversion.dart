@@ -10,6 +10,7 @@ class AportacionEmpresarial {
   int? montoBeneficioTotal;
   String? fechaInversion;
 
+
   AportacionEmpresarial({
     this.codigoInversion,
     this.idDepartamento, //FK

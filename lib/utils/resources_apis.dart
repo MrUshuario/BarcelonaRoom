@@ -20,4 +20,13 @@ class apisResources {
   //Un usuarios con su inversiones
   static const String REST_LISTAR_USUARIOS_INVERSIONES	 					    =	"${urlbase}inversiones-con-usuarios";
 
+  //APIS
+  static const String REST_ENVIAR_USUARIO	 					    =	"${urlbase}enviarusuario";
+  //LOGIN
+  static const String REST_LOGIN_CONTRA 					     =	"${urlbase}login";
+  static const String REST_LOGIN_GOOGLE 					     =	"${urlbase}loginGoogle";
+  static const String REST_LOGIN_FACABOOK 					   =	"${urlbase}loginFacebook";
+
+  //EN EL TOKEN DEBE ESTAR EL ID DE USUARIO EMAIL VERIFICATION CORREO DE VERIFICACION
+
 }

@@ -82,6 +82,23 @@ class HelpersViewLetrasSubs {
     );
   }
 
+  static Widget formItemsDesignSubSinexpandir(String text, String text2) {
+    return   Row(
+      mainAxisAlignment: MainAxisAlignment.start, // Align content to the left
+      children: [
+        Text(
+              "$text $text2",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                //color: Colors.white,
+              ),
+            ),
+      ],
+    );
+  }
+
   static Widget formItemsDesign(String text) {
     return   Row(
       mainAxisAlignment: MainAxisAlignment.start, // Align content to the left

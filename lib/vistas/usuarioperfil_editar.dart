@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
+import 'package:barcelonaroom/obj/OBJusuarios.dart';
+import 'package:barcelonaroom/obj/sql/respformato.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
+import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
@@ -11,16 +16,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
 class Usuario_perfileditar extends StatefulWidget {
-
+  usuariotrabajador modoficarusuario = usuariotrabajador();
+  apiprovider_formulario apiForm= apiprovider_formulario();
+  XFile? imageFile;
+  String? base64String;
+  bool fotoTomada = false;
   TextEditingController formNombre1 = TextEditingController();
   TextEditingController formNombre2 = TextEditingController();
   TextEditingController formApeP = TextEditingController();
   TextEditingController formApeM = TextEditingController();
   TextEditingController formDirrecion = TextEditingController();
+  TextEditingController formTelefono = TextEditingController();
   TextEditingController formContra = TextEditingController();
   TextEditingController formContraRepetir = TextEditingController();
   TextEditingController formContra2 = TextEditingController();
@@ -59,18 +71,205 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 }
 
 class _Usuario_perfileditar extends State<Usuario_perfileditar> {
-
+  int? PREFidUsuario;
   @override
   void initState() {
-    funcion();
+    cargardatos();
     super.initState();
 
   }
 
-  void funcion()  {
+  Future<void> cargardatos()  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      PREFidUsuario = prefs.getInt('name') ?? 1;
+      //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
+    });
+  }
+
+
+  displayDialog(String? title, String? msg) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title!),
+          content: Text(msg!),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: const Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> TomarFoto() async {
+    ImagePicker picker = ImagePicker();
+    widget.imageFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+    List<int> imageBytes = File(widget.imageFile!.path).readAsBytesSync();
+    widget.base64String = base64Encode(imageBytes);
+    setState(() {
+      widget.fotoTomada = true;
+    });
+  }
+
+  Future<void> SubirFoto() async {
+    ImagePicker picker = ImagePicker();
+    widget.imageFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+    List<int> imageBytes = File(widget.imageFile!.path).readAsBytesSync();
+    widget.base64String = base64Encode(imageBytes);
+    setState(() {
+      widget.fotoTomada = true;
+    });
+  }
+
+  void ConfirmarDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Image.asset(Resources.iconInfo),
+              SizedBox(width: 4), // Espacio entre el icono y el texto
+              Expanded(
+                child: Text(
+                  '¿Desea confirmar la modificación de información?',
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 20, // Tamaño de fuente deseado
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.start, // Alinea los botones a la izquierda
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context); // Cierra el diálogo
+                    CargaDialog();
+                    //HACER EL ENVIO DE DATA
+                    var apiResult = await widget.apiForm.post_EnviarUsuario(widget.modoficarusuario);
+                    _mostrarLoadingStreamController.add(true);
+                    if (apiResult.coMensaje != "") {
+                      displayDialog("Mensaje informatibo",apiResult.descMensaje);
+                    } else {
+                      displayDialog("Error de envio", "Hubo un problema con la data");
+                    }
+                    _mostrarLoadingStreamController.add(true);
+
+                  },
+                  child: const Text('Sí',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo
+                  },
+                  child: const Text('No',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
 
   }
 
+  void AvisoDialog(String text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Image.asset(Resources.iconInfo),
+              SizedBox(width: 4), // Espacio entre el icono y el texto
+              Expanded(
+                child: Text(
+                  text,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 20, // Tamaño de fuente deseado
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.start, // Alinea los botones a la izquierda
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo
+                  },
+                  child: const Text('Cerrar',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+
+  }
+
+  //ALERTDIALGO API
+  final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
+  void CargaDialog() {
+    bool mostrarLOADING = false;
+    showDialog(
+      barrierDismissible: mostrarLOADING,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            _mostrarLoadingStreamController.stream.listen((value) {
+              setState(() {
+                mostrarLOADING = value;
+              });
+            });
+
+            return AlertDialog(
+              contentPadding: EdgeInsets.all(0),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    HelpersViewAlertProgressCircle(
+                      mostrar: mostrarLOADING,
+                      texto: "Inversión realizada",
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +388,23 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
             ),
           ),
 
+          HelpersViewLetrasSubs.formItemsDesign("Télefono"),
+          HelpersViewInputs.formItemsDesignInput(
+            Icons.map,
+            Center(
+              child: TextFormField(
+                controller: widget.formTelefono,
+                //readOnly: true, // Optional: Set to true if the field is read-only
+                maxLength: 11,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                  hintText: "telefono", // Hint text for empty field
+                  counterText: "", // Hides character counter (optional)
+                ),
+              ),
+            ),
+          ),
+
           HelpersViewLetrasSubs.formItemsDesign("Dirección"),
           HelpersViewInputs.formItemsDesignInput(
             Icons.map,
@@ -281,16 +497,183 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
             ),
           ),
 
+          HelpersViewLetrasSubs.formItemsDesign("Enviar Foto"),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 25.0, bottom: 8.0, left: 8.0, right: 8.0),
+            child:
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child:
+
+                  GestureDetector(
+                    onTap: ()  async  {
+                      TomarFoto();
+                    },
+                    child:    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color:  Resources.AzulTema,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Column(
+                        // Add spacing between icon and text (optional)
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.camera_alt, size: 50.0, color: Colors.white,
+                          ),
+                          Text("Tomar Foto", style: TextStyle(color: Colors.white)), // Your text
+                          SizedBox(height: 5.0),
+
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+
+                ),
+
+                const Expanded(
+                  flex: 1,
+                  child: const SizedBox(height: 1.0),
+                ),
+
+                Expanded(
+                  flex: 4,
+                  child:
+                  GestureDetector(
+                    onTap: ()  async  {
+                      SubirFoto();
+                    },
+                    child:
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color:  Resources.AzulTema,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Column(
+                        // Add spacing between icon and text (optional)
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.search, size: 50.0, color: Colors.white,
+                          ),
+                          Text("Subir Foto", style: TextStyle(color: Colors.white)), // Your text
+                          SizedBox(height: 5.0),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
+
+    Visibility(
+    visible: widget.fotoTomada,
+    child:
+    Container(
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
+      child:
+      Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child:
+            Column(
+              children: [
+                HelpersViewLetrasSubs.formItemsDesign("Foto tomada"),
+              ],),
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Column(
+                // Add spacing between icon and text (optional)
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete, size: 50.0, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        widget.base64String = "";
+                        widget.fotoTomada = false;
+                      });
+
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+    ),
+
+
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
           HelpersViewLetrasSubs.formItemsDesignLineaGris(),
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           GestureDetector(
-              onTap: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
+              onTap: ()  {
+
+
+                if( widget.formContra.text == widget.formContra2.text ) {
+
+                  //formContra2
+                  setState(() {
+                    widget.modoficarusuario.codigoUsuario = PREFidUsuario; // POR EL MOMENTO
+                    widget.modoficarusuario.primernombre = widget.formNombre1.text;
+                    widget.modoficarusuario.segundonombre= widget.formNombre2.text;
+                    widget.modoficarusuario.primerapellido= widget.formApeP.text;
+                    widget.modoficarusuario.segundoapellido= widget.formApeM.text;
+                    widget.modoficarusuario.direccion = widget.formDirrecion.text;
+                    widget.modoficarusuario.telefono= widget.formTelefono.text;
+                    widget.modoficarusuario.imagen= widget.base64String;
+                  });
+
+                  //formTelefono
+                  //widget.modoficarusuario.dni;
+                  //widget.modoficarusuario.idempleado;
+                  //widget.modoficarusuario.nif;
+                  //widget.modoficarusuario.fechaantiguedad;
+                  //widget.modoficarusuario.categoriaprofesional;
+                  //widget.modoficarusuario.puesto;
+                  //widget.modoficarusuario.banco;
+                  //widget.modoficarusuario.sucursal;
+                  //widget.modoficarusuario.cuenta;
+                  //widget.modoficarusuario.tipocontrato;
+                  //widget.modoficarusuario.cnae;
+                  //widget.modoficarusuario.nroafiliaciones;
+                  //widget.modoficarusuario.centrotrabajociudad;
+                  //widget.modoficarusuario.centrotrabajoinfo;
+                  //widget.modoficarusuario.createat;
+                  //widget.modoficarusuario.uploadat;
+                  //widget.modoficarusuario.token;
+                  ConfirmarDialog();
+
+                } else {
+                  AvisoDialog("Las contraseñas no coinciden");
+                }
+
+
+
               },
               child: Container(
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -303,7 +686,7 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Confirmar Modificación",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),

@@ -117,6 +117,8 @@ class _login extends State<login> {
       if (_currentUser != null) {
         String? username = _currentUser?.displayName;
         String? correoname = _currentUser?.email;
+        String? id = _currentUser?.id;
+
         if (username != null) {
           // Use the username as needed
           print("Username: $username");
@@ -124,6 +126,10 @@ class _login extends State<login> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('name', username!);
           await prefs.setString('Correoname', correoname!);
+
+          //AQUI DEBERIA ENVIAR UN API Y PONER DEMAS DATOS A RECIBIR
+
+          await prefs.setString('tipoUsuario', "NORMAL");
         }
       }
 
@@ -234,7 +240,47 @@ class _login extends State<login> {
   }
 
 
+  void AvisoDialog(String text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Image.asset(Resources.iconInfo),
+              SizedBox(width: 4), // Espacio entre el icono y el texto
+              Expanded(
+                child: Text(
+                  text,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 20, // Tamaño de fuente deseado
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.start, // Alinea los botones a la izquierda
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Cierra el diálogo
+                  },
+                  child: const Text('Cerrar',
+                    style: TextStyle(
+                      fontSize: 18, // Tamaño de fuente deseado
+                    ),),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
 
+  }
 
 
   Widget formUI() {
@@ -329,7 +375,7 @@ class _login extends State<login> {
               child: TextFormField(
                 controller: widget.formUsuarioCtrl,
                 //readOnly: true, // Optional: Set to true if the field is read-only
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Optional: Restrict input to digits
+                //inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Optional: Restrict input to digits
                 maxLength: 8,
                 decoration: InputDecoration(
                   hintText: "Usuario", // Hint text for empty field
@@ -375,10 +421,46 @@ class _login extends State<login> {
               onTap: () async {
                 //CargaDialog();
 
-                String usuario = widget.formUsuarioCtrl.text!;
+                String usuario = widget.formUsuarioCtrl.text!.toUpperCase();
                 String contra = widget.formClaveCtrl.text!;
+                SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                /*
+                if(usuario == "ALBERTO" && contra == "alberto"){
+
+                  await prefs.setString('name', "Alberto");
+                  await prefs.setString('Correoname', "alberto@gmail.com");
+                  await prefs.setString('tipoUsuario', "INTERMEDIARIO"); //INTERMEDIARIO
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  Home()),
+                  );
+
+                } else if (usuario == "CARLOS" && contra == "carlos"){
+
+                  await prefs.setString('name', "Carlos");
+                  await prefs.setString('Correoname', "carlos@gmail.com");
+                  await prefs.setString('tipoUsuario', "DEPARTAMENTO"); //ARENDATARIO
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  Home()),
+                  );
+                } else if (usuario == "JUAN" && contra == "juan"){
+
+                  await prefs.setString('name', "Juan");
+                  await prefs.setString('Correoname', "juan@gmail.com");
+                  await prefs.setString('tipoUsuario', "INVERSOR"); //ARRENDADOR
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  Home()),
+                  );
+                } else if (usuario == "" || contra == "") {
+                  AvisoDialog("Rellene adecuadamente el usuario");
+                } else {
+
+                  /*
                 ReponseInicioFinActividades resp = ReponseInicioFinActividades();
                 resp = await apiVersion.post_LoginUsuarios(usuario,contra);
                 print(resp.nroDoc);
@@ -398,13 +480,11 @@ class _login extends State<login> {
                   //TALVEZ DEPARTAMENTO
 
                   //GUARDAR DATOS
-
-                 */
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>  Home()),
                   );
-                  /*
+
                 }else {
                   if(resp.name == "9999"){
                     //ENCONTRO UN ERROR
@@ -418,6 +498,14 @@ class _login extends State<login> {
                     //UsuarioNoEncontrado( "No se ha encontrado el usuario");
                   }
                 } */
+                  AvisoDialog("Este usuario no existe");
+
+                }
+
+
+
+
+
 
               },
               child: Container(

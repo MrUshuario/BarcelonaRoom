@@ -42,76 +42,11 @@ await Firebase.initializeApp(
 https://pub.dev/packages/google_sign_in/install
 
 
-class CustomSearc extends SearchDelegate{
-
-  List<String> alldata = [
-    "opcion1", "opcion2", "opcion3"
-  ];
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return[
-      IconButton(icon: const Icon(Icons.clear),
-          onPressed: (){
-            query = '';
-      })
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return
-      IconButton(icon: const Icon(Icons.arrow_back),
-          onPressed: (){
-            close(context, null);
-          });
-  }
-
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context).copyWith(
-      scaffoldBackgroundColor: Colors.white70,
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for(var item in alldata) {
-      if(item.toLowerCase().contains(query.toLowerCase())){
-        matchQuery.add(item);
-      }
-
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(title: Text(result),
-          );
-        }
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for(var item in alldata) {
-      if(item.toLowerCase().contains(query.toLowerCase())){
-        matchQuery.add(item);
-      }
-
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(title: Text(result),
-          );
-        }
-    );
-  }
+1) Enviar imagenes en BASE64 y luego el servidor enviaria URL
+2) Hacer el envio del Login y luego el modificar de los datos del usuario
+3) tipoUsuario para distinguir UI/UX
 
 
-
-}
+(el que invierte es arrendador)
+Arrendatario, inversor, en el movil
+Usuario Empresa

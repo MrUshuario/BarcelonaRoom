@@ -5,6 +5,7 @@ class usuariotrabajador {
   String? primerapellido;
   String? segundoapellido;
   String? direccion;
+  String? telefono;
   String? dni;
   String? idempleado; //esto podria ir a una nueva tabla
   String? nif;
@@ -21,6 +22,10 @@ class usuariotrabajador {
   String? centrotrabajoinfo;
   String? createat;
   String? uploadat;
+  String? imagen;
+  String? hashcontra;
+
+  //TOKEN verificaiion en otra tabla
 
   usuariotrabajador({
     this.codigoUsuario,
@@ -29,6 +34,7 @@ class usuariotrabajador {
     this.primerapellido,
     this.segundoapellido,
     this.direccion,
+    this.telefono,
     this.dni,
     this.idempleado,
     this.nif,
@@ -45,6 +51,8 @@ class usuariotrabajador {
     this.centrotrabajoinfo,
     this.createat,
     this.uploadat,
+    this.imagen,
+    this.hashcontra,
   });
 
   factory usuariotrabajador.fromJson(dynamic json)  => usuariotrabajador(
@@ -54,6 +62,7 @@ class usuariotrabajador {
     primerapellido: json['primerapellido'] as String?,
     segundoapellido: json['segundoapellido'] as String?,
     direccion: json['direccion'] as String?,
+    telefono: json['telefono'] as String?,
     dni: json['dni'] as String?,
     idempleado: json['idempleado'] as String?,
     nif: json['nif'] as String?,
@@ -70,7 +79,8 @@ class usuariotrabajador {
     centrotrabajoinfo: json['centrotrabajoinfo'] as String?,
     createat: json['createat'] as String?,
     uploadat: json['uploadat'] as String?,
-
+    imagen: json['imagen'] as String?,
+    hashcontra: json['hashcontra'] as String?
   );
 
   static List<usuariotrabajador> listFromJson(dynamic json) {
@@ -88,6 +98,7 @@ class usuariotrabajador {
       "primerapellido": primerapellido,
       "segundoapellido": segundoapellido,
       "direccion": direccion,
+      "telefono":telefono,
       "dni": dni,
       "idempleado": idempleado,
       "nif": nif,
@@ -104,6 +115,7 @@ class usuariotrabajador {
       "centrotrabajoinfo": centrotrabajoinfo,
       "createat": createat,
       "uploadat": uploadat,
+      "imagen":imagen,
     };
   }
   

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
+import 'package:barcelonaroom/obj/OBJapartamentosDetalle.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
 import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
@@ -21,6 +23,8 @@ class Detalle extends StatefulWidget {
     Apartamento? formData;
     Detalle(this.formData, {super.key});
 
+    apiprovider_formulario apiForm= apiprovider_formulario();
+
 
   @override
   State<StatefulWidget> createState() => _Detalle();
@@ -38,7 +42,16 @@ class _Detalle extends State<Detalle> {
 
   }
 
-  void funcion()  {
+  Future<void> funcion()  async {
+
+    ApartamentoDetalle ApartamentoEntity  = await widget.apiForm.get_DescargarApartamentoDETALLE(widget.formData?.idDepartamento);
+
+    CargaDialog();
+    Timer.periodic(Duration(seconds: 3), (time) async {
+      _mostrarLoadingStreamController.add(true);
+      time.cancel();
+    });
+
 
   }
 

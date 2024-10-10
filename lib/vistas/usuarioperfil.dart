@@ -54,6 +54,7 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 class _Usuario_perfil extends State<Usuario_perfil> {
   String? PREFname; //1er nombre 2do nombre apellidos
   String? PREFcorreo;
+  String? PREFtipo;
 
 
   @override
@@ -68,6 +69,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
     setState(() {
       PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
       PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
+      PREFtipo = prefs.getString('tipoUsuario') ?? "INVERSOR";
     });
   }
 
@@ -213,7 +215,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
           HelpersViewLetrasSubs.formItemsDesignLinea(),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
-          HelpersViewLetrasSubs.formItemsDesignSub("Direción"),
+          HelpersViewLetrasSubs.formItemsDesignSub("Dirección"),
           Container(
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             child:
@@ -340,7 +342,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   color: Resources.AzulTema,
                 ),
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text("Modificar datos a",
+                child: const Text("Modificar datos",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
