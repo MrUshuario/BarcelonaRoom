@@ -22,7 +22,9 @@ class Detalle extends StatefulWidget {
     TextEditingController inversion = TextEditingController();
     Apartamento? formData;
     Detalle(this.formData, {super.key});
-
+    ApartamentoDetalle? fomDetalle;
+    List<String> listaimagenes = List.empty();
+    List<String> listaimagenesnombres = List.empty();
     apiprovider_formulario apiForm= apiprovider_formulario();
 
 
@@ -33,30 +35,34 @@ class Detalle extends StatefulWidget {
 enum TipoPago { Visa, PayPal}
 
 class _Detalle extends State<Detalle> {
+  bool mostrarCargar = true;
   TipoPago? _TipoPago;
   int currentPageIndex = 0;
   @override
   void initState() {
-    funcion();
+    traermasdatos();
     super.initState();
 
   }
 
-  Future<void> funcion()  async {
+  Future<void> traermasdatos()  async {
+    //CargaDialog();
+    ApartamentoDetalle apartamentoEntity  = await widget.apiForm.get_DescargarApartamentoDETALLE(widget.formData?.idDepartamento);
 
-    ApartamentoDetalle ApartamentoEntity  = await widget.apiForm.get_DescargarApartamentoDETALLE(widget.formData?.idDepartamento);
-
-    CargaDialog();
-    Timer.periodic(Duration(seconds: 3), (time) async {
-      _mostrarLoadingStreamController.add(true);
-      time.cancel();
+    setState(() {
+      mostrarCargar = false;
     });
+
+    widget.fomDetalle = apartamentoEntity;
+    widget.listaimagenes = apartamentoEntity.imagenes!.split(",");
+    widget.listaimagenesnombres = apartamentoEntity.imagenes_nombres!.split(",");
+    print("listaimagenesnombres:");
+    print(widget.listaimagenesnombres);
 
 
   }
 
   //ALERTDIALGO API
-  final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
   void ConfirmarDialog(String monto, String palabra) {
     showDialog(
       context: context,
@@ -64,7 +70,6 @@ class _Detalle extends State<Detalle> {
         return AlertDialog(
           title: Row(
             children: [
-
               Image.asset(Resources.iconInfo),
               SizedBox(width: 4), // Espacio entre el icono y el texto
                Expanded(
@@ -217,7 +222,7 @@ class _Detalle extends State<Detalle> {
     );
   }
 
-
+  final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
   void CargaDialog() {
     bool mostrarLOADING = false;
     showDialog(
@@ -351,17 +356,64 @@ class _Detalle extends State<Detalle> {
         child: Column(
         children: [
 
+          Visibility(
+            visible: mostrarCargar,
+            child: Container(
+              width: MediaQuery.of(context).size.height * 0.080,
+              height: MediaQuery.of(context).size.height * 0.080,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.grey,
+                valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
+                strokeWidth: 10,
+              ),
+            ),
+          ),
+
+
+          Container(
+            height: MediaQuery.of(context).size.height * 0.70,
+            child:
+            Scrollbar(
+              thickness: 9.0,
+              radius: Radius.circular(5.0),
+              child:
+              widget.listaimagenesnombres.isNotEmpty ?
+              ListView.builder(itemCount: widget.listaimagenesnombres!.length,
+                itemBuilder: (context, index) {
+                return Text(widget.listaimagenesnombres![index]);
+                },)
+                    : Center(
+            child: HelpersViewLetrasSubs.formItemsDesign(
+            "No hay imagenes"),
+            ),
+            ),
+          ),
+
           Align(
             alignment: Alignment.center,
             child: //widget.formData?.urlimagen
-            Image.network(
-              widget.formData?.imagen != null
-                  ? widget.formData!.imagen!
-                  : 'path/to/placeholder_image.jpg',
-              width: 200.0,
-              height: 200.0,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0), // Adjust as desired
+              child: Image.network(
+                widget.formData?.imagen != null
+                    ? widget.formData!.imagen!
+                    : 'https://picsum.photos/250?image=3',
+                width: double.maxFinite,
+                height: 200.0,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Handle the error here
+                  return
+                    //Center(child: Text('Error loading image'));
+                    Image.network('https://picsum.photos/250?image=3',
+                        width: double.maxFinite,
+                        height: 200.0,
+                        fit: BoxFit.cover
+                    );
+                },
+              ),
             ),
+
           ),
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),

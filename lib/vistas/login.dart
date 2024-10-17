@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/firebase_options.dart';
+import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
+import 'package:barcelonaroom/obj/OBJusuarios.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +33,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 
 class login extends StatefulWidget {
-
+  apiprovider_formulario apiForm= apiprovider_formulario();
 
   //GlobalKey<FormState> keyForm = GlobalKey();
   TextEditingController formUsuarioCtrl = TextEditingController();
@@ -114,32 +117,41 @@ class _login extends State<login> {
     try {
       _currentUser = await _googleSignIn.signIn();
 
+
       if (_currentUser != null) {
-        String? username = _currentUser?.displayName;
         String? correoname = _currentUser?.email;
         String? id = _currentUser?.id;
 
-        if (username != null) {
-          // Use the username as needed
-          print("Username: $username");
-          print("Correoname: $correoname");
+        if (correoname != null) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('name', username!);
+
           await prefs.setString('Correoname', correoname!);
 
-          //AQUI DEBERIA ENVIAR UN API Y PONER DEMAS DATOS A RECIBIR
+          usuariotrabajador resp = usuariotrabajador();
+          resp = await widget.apiForm.post_Login(correoname,id!,"CONTRA");
+          print("ENVIADO API");
+          print(resp.primernombre);
+          if(resp.primernombre! == "errorNOENVIADO"){
+            AvisoDialog("No se encontro registro");
+          } else {
+            await prefs.setString('name', "${resp.primernombre!} ${resp.segundonombre!} ${resp.primerapellido!} ${resp.segundoapellido!}");
+            await prefs.setString('tipoUsuario', resp.puesto!);
+            await prefs.setString('token', resp.token!);
 
-          await prefs.setString('tipoUsuario', "NORMAL");
+            //GUARDAR DATOS
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  Home()),
+            );
+          }
+
         }
+      } else {
+        AvisoDialog("Este usuario no esta registrado en Google");
       }
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
     } catch (error) {
-      print("VALLA FALLO DE NUEVO");
-      print(error);
+      AvisoDialog("Este usuario no existe");
     }
   }
 
@@ -291,7 +303,7 @@ class _login extends State<login> {
             GestureDetector(
                 onTap: ()  {
                   //BOTON GOOGLE
-                  _handleSignIn();
+                  //_handleSignIn();
                 },
                 child: Container(
                   margin: const EdgeInsets.all(10.0),
@@ -369,17 +381,14 @@ class _login extends State<login> {
 
            */
 
-          HelpersViewInputs.formItemsDesignlogin(
-            "Usuario:", // Empty title (optional)
+          HelpersViewInputs.formItemsDesignloginIcon(
+            Icons.email,
             Center(
               child: TextFormField(
                 controller: widget.formUsuarioCtrl,
-                //readOnly: true, // Optional: Set to true if the field is read-only
-                //inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Optional: Restrict input to digits
-                maxLength: 8,
+                maxLength: 50,
                 decoration: InputDecoration(
-                  hintText: "Usuario", // Hint text for empty field
-                  counterText: "", // Hides character counter (optional)
+                hintText: "Correo electronico",
                 ),
               ),
             ),
@@ -421,7 +430,8 @@ class _login extends State<login> {
               onTap: () async {
                 //CargaDialog();
 
-                String usuario = widget.formUsuarioCtrl.text!.toUpperCase();
+                //String usuario = widget.formUsuarioCtrl.text!.toUpperCase();
+                String usuario = widget.formUsuarioCtrl.text!;
                 String contra = widget.formClaveCtrl.text!;
                 SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -429,84 +439,47 @@ class _login extends State<login> {
 
                   await prefs.setString('name', "Alberto");
                   await prefs.setString('Correoname', "alberto@gmail.com");
-                  await prefs.setString('tipoUsuario', "INTERMEDIARIO"); //INTERMEDIARIO
+                  await prefs.setString('tipoUsuario', "Huesped"); //INTERMEDIARIO
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) =>  Home()),
                   );
 
-                } else if (usuario == "CARLOS" && contra == "carlos"){
-
-                  await prefs.setString('name', "Carlos");
-                  await prefs.setString('Correoname', "carlos@gmail.com");
-                  await prefs.setString('tipoUsuario', "DEPARTAMENTO"); //ARENDATARIO
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  Home()),
-                  );
-                } else if (usuario == "JUAN" && contra == "juan"){
-
-                  await prefs.setString('name', "Juan");
-                  await prefs.setString('Correoname', "juan@gmail.com");
-                  await prefs.setString('tipoUsuario', "INVERSOR"); //ARRENDADOR
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  Home()),
-                  );
                 } else if (usuario == "" || contra == "") {
                   AvisoDialog("Rellene adecuadamente el usuario");
                 } else {
 
-                  /*
-                ReponseInicioFinActividades resp = ReponseInicioFinActividades();
-                resp = await apiVersion.post_LoginUsuarios(usuario,contra);
-                print(resp.nroDoc);
-                if(resp.nroDoc != null){
+                  // Use the username as needed
 
                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('name', resp.name!);
-                  await prefs.setString('apPaterno', resp.apPaterno!);
-                  await prefs.setString('apMaterno', resp.apMaterno!);
-                  await prefs.setString('nroDoc', resp.nroDoc!);
-                  await prefs.setString('typeUser', resp.typeUser!);
-                  if (resp.distrito != null) {
-                    await prefs.setString('distrito', resp.distrito!);
-                  } else {
-                    await prefs.setString('distrito', "No registrado");
-                  }
-                  //TALVEZ DEPARTAMENTO
 
-                  //GUARDAR DATOS
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  Home()),
-                  );
+                  await prefs.setString('Correoname', usuario);
+                  //AQUI DEBERIA ENVIAR UN API Y PONER DEMAS DATOS A RECIBIR
+                  //API
+                  usuariotrabajador resp = usuariotrabajador();
+                  resp = await widget.apiForm.post_Login(usuario,contra,"CONTRA");
+                  print("ENVIADO API");
+                  print(resp.primernombre);
 
-                }else {
-                  if(resp.name == "9999"){
-                    //ENCONTRO UN ERROR
-                    _mostrarLoadingStreamController.add(true);
-                    _mostrarLoadingStreamControllerTEXTO.add("Error en la base de datos");
-                    //UsuarioNoEncontrado( "Error en la base de datos");
+                  if(resp.primernombre! == ""){
+                    AvisoDialog("No se encontro registro");
                   } else {
-                    //NO ENCONTRO
-                    _mostrarLoadingStreamController.add(true);
-                    _mostrarLoadingStreamControllerTEXTO.add("No se ha encontrado el usuario");
-                    //UsuarioNoEncontrado( "No se ha encontrado el usuario");
+                    await prefs.setString('name', "${resp.primernombre!} ${resp.segundonombre!} ${resp.primerapellido!} ${resp.segundoapellido!}");
+                    await prefs.setString('tipoUsuario', resp.puesto!);
+                    await prefs.setString('token', resp.token!);
+
+                    //GUARDAR DATOS
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  Home()),
+                    );
                   }
-                } */
+
+
+
                   AvisoDialog("Este usuario no existe");
-
                 }
-
-
-
-
-
-
               },
               child: Container(
                 //margin: const EdgeInsets.all(30.0),
@@ -551,23 +524,43 @@ class _login extends State<login> {
                         fontWeight: FontWeight.w500)),
               )),
 
-          HelpersViewLetrasSubs.formItemsDesign2("Ingreso con Google"),
+          HelpersViewLetrasSubs.formItemsDesign2("Ingreso con redes sociales"),
 
-          IconButton(
-              icon: Image.asset(
-                  Resources.google,
-                width: double.maxFinite,
-                height: 50.0,),
-              onPressed: () async {
-                await _handleSignIn();
-                //POR EL MOMENTO
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-                //BORAR DESPUES
-              }
-          ),
+          Row(
+          children: [
+            Expanded(
+            flex: 4,
+            child:           IconButton(
+                icon: Icon(FontAwesomeIcons.google, size: 50.0, color: Colors.black),
+                onPressed: () async {
+                  await _handleSignIn();
+                  //GOOGLE INGRESO
+
+                  //BORRAR!!
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                  //BORAR DESPUES
+                }
+            ),
+            ),
+
+            Expanded(
+              flex: 4,
+              child:           IconButton(
+                  icon: Icon(FontAwesomeIcons.facebook, size: 50.0, color: Colors.black),
+                  onPressed: () async {
+                    await _handleSignIn();
+                    //FACEBOOK INGRESO
+
+                  }
+              ),
+            ),
+
+          ]),
+
+
 
         ],
       );

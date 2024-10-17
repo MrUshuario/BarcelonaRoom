@@ -4,14 +4,15 @@ import 'package:barcelonaroom/obj/OBJapartamentosDetalle.dart';
 import 'package:barcelonaroom/obj/OBJusuarios.dart';
 import 'package:barcelonaroom/obj/sql/respformato.dart';
 import 'package:barcelonaroom/utils/resources_apis.dart';
+import 'package:crypto/crypto.dart';
 import 'package:get_it/get_it.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 
 class apiprovider_formulario {
 
 
-  final client = GetIt.I.get<Client>();
+  //final client = GetIt.I.get<Client>();
   final api_get_busqueda_listar_general               = apisResources.REST_BUSQUEDA_LISTAR_GENERAL;
   final api_get_busqueda_listar                       = apisResources.REST_BUSQUEDA_LISTAR_HABITACION;
   final api_get_detalle_producto                      = apisResources.REST_habitaciondetalle;
@@ -22,65 +23,59 @@ class apiprovider_formulario {
 
   final api_post_enviarUsuario                        = apisResources.REST_ENVIAR_USUARIO;
 
+  final api_get_login_contra        = apisResources.REST_LOGIN_CONTRA;
+  final api_get_login_google       = apisResources.REST_LOGIN_GOOGLE;
+  final api_get_login_facebook        = apisResources.REST_LOGIN_FACABOOK;
 
 
 
 
   //EJEMPLO CON LISTAS
-/*
-  Future<List<Formulario>> get_FormularioLista() async {
+
+  Future<usuariotrabajador> post_Login(String correo, String contra, String tipo) async {
     try {
-      print("iniciando api_get_LoginForm...");
-    String url_login = api_get_LoginForm;
-    Uri uri = Uri.parse(url_login);
-    final response = await client.get(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
-    print("response api_get_LoginForm...${response.body}");
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return Formulario.listFromJson(data['formulario']);
-      } else {
-        List<Formulario> ubi = List.empty();
-        return  ubi;
+      var bytes1 = utf8.encode(contra);         // data being hashed
+      var hash = sha256.convert(bytes1);         // Hashing Process
+
+      final Map<String, dynamic> bodyData = {'hash': '$hash', 'correo': '$correo'};
+      print(bodyData);
+      String url_login = "$api_get_login_contra";
+     if (tipo == "google") {
+       url_login = "$api_get_login_google";
+      } else if (tipo == "facebook"){
+       url_login = "$api_get_login_facebook";
       }
-    } catch (e) {
-      List<Formulario> ubi = List.empty();
-      return  ubi;
-    }
-  }
-*/
-
-  //AUTOGENERADO YA NO SE USA
-
-  Future<List<usuariotrabajador>> post_Login(String token) async {
-    final Map<String, dynamic> bodyData = {'idFormato': "ingresar login futuro"};
-    try {
-      print("post_Login");
-      String url_login = "api_get_login_usuario";
-      Uri uri = Uri.parse(url_login);
-      final response = await client.post(
-        uri,
-        headers: {
+     /*
+             headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(bodyData),
+      */
+      print("iniciando get_Login...");
+      Uri uri = Uri.parse(url_login);
+      final response = await http.post(
+        uri,
+        body: bodyData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       );
-      print("response api_get_LoginForm FINAL...${response.body}");
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return usuariotrabajador.listFromJson(data['formulario']);
+        return usuariotrabajador.fromJson(data);
       } else {
-        List<usuariotrabajador> ubi = List.empty();
-        return  ubi;
+        usuariotrabajador obj = usuariotrabajador();
+        obj.primernombre = "errorNOENVIADO";
+        return  obj;
       }
     } catch (e) {
-      List<usuariotrabajador> ubi = List.empty();
-      return  ubi;
+      usuariotrabajador obj = usuariotrabajador();
+      obj.primernombre = "errorNOENVIADO";
+      return  obj;
     }
   }
+
 
   //DESCARGAR APARTAMENTO
   Future<List<Apartamento>> get_DescargarApartamento(String distrito) async {
@@ -95,7 +90,8 @@ class apiprovider_formulario {
       }
 
       Uri uri = Uri.parse(url_login);
-      final response = await client.get(
+
+      final response = await http.get(
         uri,
         headers: {
           'Content-Type': 'application/json',
@@ -125,35 +121,6 @@ class apiprovider_formulario {
     }
   }
 
-  //DESCARGAR APARTAMENTO
-  Future<respFormato> post_EnviarUsuario(usuariotrabajador usuario) async {
-    try {
-
-      String url_login = "$api_post_enviarUsuario";
-      print("iniciando post_EnviarUsuario...");
-
-      Uri uri = Uri.parse(url_login);
-      final response = await client.post(
-        uri,
-        body: json.encode(usuario.toMap()),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return respFormato.fromJson(json.decode(response.body));
-      } else {
-        respFormato obj = respFormato();
-        return  obj;
-      }
-    } catch (e) {
-      respFormato obj = respFormato();
-      obj.coMensaje = "Ocurrio un error en el envio";
-      return  obj;
-    }
-  }
-
   //DESCARGAR APARTAMENTO DETALLE
   Future<ApartamentoDetalle> get_DescargarApartamentoDETALLE(int? idapartamento) async {
     try {
@@ -163,7 +130,7 @@ class apiprovider_formulario {
       print("iniciando get_DescargarApartamentoDETALLE...");
 
       Uri uri = Uri.parse(url_login);
-      final response = await client.get(
+      final response = await http.get(
         uri,
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +141,7 @@ class apiprovider_formulario {
         print("response get_DescargarApartamentoDETALLE...${response.body}");
         final Map<String, dynamic> data = jsonDecode(response.body);
         //DEVOLVER DATOS LOGIN
-        return ApartamentoDetalle.fromJson(data);
+        return ApartamentoDetalle.fromJson(data['habitaciones']);
       } else if (response.statusCode == 401) {
         ApartamentoDetalle obj = ApartamentoDetalle();
         obj.id = 999999;
@@ -188,6 +155,39 @@ class apiprovider_formulario {
       return  obj;
     }
   }
+
+
+  //DESCARGAR APARTAMENTO
+  Future<respFormato> post_EnviarUsuario(usuariotrabajador usuario) async {
+    try {
+
+      String url_login = "$api_post_enviarUsuario";
+      print("iniciando post_EnviarUsuario...");
+      var body = json.encode(usuario.toMap());
+      print(body);
+      Uri uri = Uri.parse(url_login);
+      final response = await http.post(
+        uri,
+        body: json.encode(usuario.toMap()),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return respFormato.fromJson(json.decode(response.body));
+      } else {
+        respFormato obj = respFormato();
+        obj.coMensaje = "Ocurrio un error en el envio";
+        return  obj;
+      }
+    } catch (e) {
+      respFormato obj = respFormato();
+      obj.coMensaje = "Ocurrio un error en el envio";
+      return  obj;
+    }
+  }
+
 
 
 }

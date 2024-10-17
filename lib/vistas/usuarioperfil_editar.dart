@@ -40,6 +40,15 @@ class Usuario_perfileditar extends StatefulWidget {
   bool _isPasswordVisibleRepetir = true;
   bool _isPasswordVisible2 = true;
 
+  final formNombre1ParamValidateForm    = List.filled(3, "", growable: false);
+  final formApePParamValidateForm       = List.filled(3, "", growable: false);
+  final formDirrecionParamValidateForm  = List.filled(3, "", growable: false);
+  final formCorreoParamValidateForm     = List.filled(3, "", growable: false);
+  final formDNIParamValidateForm        = List.filled(3, "", growable: false);
+  final formContraParamValidateForm     = List.filled(3, "", growable: false);
+  final formContra2ParamValidateForm    = List.filled(3, "", growable: false);
+  final formTelefonoParamValidateForm   = List.filled(3, "", growable: false);
+
   @override
   State<StatefulWidget> createState() => _Usuario_perfileditar();
 }
@@ -82,7 +91,7 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
   Future<void> cargardatos()  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      PREFidUsuario = prefs.getInt('name') ?? 1;
+      PREFidUsuario = prefs.getInt('id') ?? 1;
       //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
     });
   }
@@ -390,7 +399,7 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
 
           HelpersViewLetrasSubs.formItemsDesign("Télefono"),
           HelpersViewInputs.formItemsDesignInput(
-            Icons.map,
+            Icons.phone,
             Center(
               child: TextFormField(
                 controller: widget.formTelefono,

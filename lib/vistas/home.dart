@@ -34,7 +34,7 @@ class Home extends StatefulWidget {
 
   //API
   //registerLazySingleton
-  final _appDatabase = GetIt.I.get<AppDatabase>();
+  //final _appDatabase = GetIt.I.get<AppDatabase>();
   //apiprovider_formulario apiForm = GetIt.I.get<apiprovider_formulario>();
   apiprovider_formulario apiForm= apiprovider_formulario();
 
@@ -1548,6 +1548,21 @@ class _Home extends State<Home> {
 
 
           //PARTE 3 CUERPO
+//
+          Visibility(
+            visible: mostrarCargar,
+            child: Container(
+              width: MediaQuery.of(context).size.height * 0.080,
+              height: MediaQuery.of(context).size.height * 0.080,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.grey,
+                valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
+                strokeWidth: 10,
+              ),
+            ),
+          ),
+
+
           //Visibility(
           //visible: mostrarCargar!,
           //child:
@@ -1627,24 +1642,11 @@ class _Home extends State<Home> {
                         child: HelpersViewLetrasSubs.formItemsDesign(
                             "Seleccione los filtros para buscar"),
                       ),
-
-
                   ),
             ),
           //),
 
-          Visibility(
-              visible: mostrarCargar,
-              child: Container(
-                width: MediaQuery.of(context).size.height * 0.080,
-                height: MediaQuery.of(context).size.height * 0.080,
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.grey,
-                  valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
-                  strokeWidth: 10,
-                ),
-              ),
-          ),
+
 
 
 

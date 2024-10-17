@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class HelpersViewInputs{
 
-
   static Widget formItemsDesign(icon, item, context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -37,6 +36,26 @@ class HelpersViewInputs{
         ),
         child: ListTile(
           leading: Text(text, style: const TextStyle(fontSize: 20.0)), // Use Text widget for text
+          title: item,
+        ),
+      ),
+    );
+  }
+
+  static Widget formItemsDesignloginIcon(icon, item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Card(
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.black,
+            //color: Theme.of(context).colorScheme.outline,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: ListTile(
+          leading:  Icon(icon, color: Colors.black,),
           title: item,
         ),
       ),

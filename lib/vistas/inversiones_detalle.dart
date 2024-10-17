@@ -95,8 +95,8 @@ class _Inversiondetalle extends State<Inversiondetalle> {
         );
       },
     );
-
   }
+
   void SeleccionMetodo(){
     showDialog(
       context: context,

@@ -10,11 +10,11 @@ GetIt getIt = GetIt.instance;
 void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
-  getIt.registerSingletonAsync<Client>(() async => await Future(() => Client()));
+  //getIt.registerSingletonAsync<Client>(() async => await Future(() => Client()));
  //getIt.registerSingletonAsync<LocationRepository>(() async => await Future(() => LocationRepositoryImpl()));
  //getIt.registerSingletonAsync<DevicesInfoPlusRepository>(() async => await Future(() => DevicesInfoPlusRepositoryImpl()));
   //getIt.registerSingletonAsync<apiprovider_menuOpciones>(() async => await Future(() => apiprovider_menuOpciones()));
-  getIt.registerSingletonAsync<AppDatabase>(() async => await $FloorAppDatabase.databaseBuilder('siContigo.db').build());
+  //getIt.registerSingletonAsync<AppDatabase>(() async => await $FloorAppDatabase.databaseBuilder('siContigo.db').build());
   runApp(const MyApp());
 }
 

@@ -7,6 +7,7 @@ class usuariotrabajador {
   String? direccion;
   String? telefono;
   String? dni;
+  String? fechanacimiento;
   String? idempleado; //esto podria ir a una nueva tabla
   String? nif;
   String? fechaantiguedad;
@@ -24,6 +25,7 @@ class usuariotrabajador {
   String? uploadat;
   String? imagen;
   String? hashcontra;
+  String? token;
 
   //TOKEN verificaiion en otra tabla
 
@@ -36,6 +38,7 @@ class usuariotrabajador {
     this.direccion,
     this.telefono,
     this.dni,
+    this.fechanacimiento,
     this.idempleado,
     this.nif,
     this.fechaantiguedad,
@@ -53,6 +56,7 @@ class usuariotrabajador {
     this.uploadat,
     this.imagen,
     this.hashcontra,
+    this.token,
   });
 
   factory usuariotrabajador.fromJson(dynamic json)  => usuariotrabajador(
@@ -64,6 +68,7 @@ class usuariotrabajador {
     direccion: json['direccion'] as String?,
     telefono: json['telefono'] as String?,
     dni: json['dni'] as String?,
+    fechanacimiento: json['fechanacimiento'] as String?,
     idempleado: json['idempleado'] as String?,
     nif: json['nif'] as String?,
     fechaantiguedad: json['fechaantiguedad'] as String?,
@@ -80,7 +85,8 @@ class usuariotrabajador {
     createat: json['createat'] as String?,
     uploadat: json['uploadat'] as String?,
     imagen: json['imagen'] as String?,
-    hashcontra: json['hashcontra'] as String?
+    hashcontra: json['hashcontra'] as String?,
+    token: json['token'] as String?
   );
 
   static List<usuariotrabajador> listFromJson(dynamic json) {
@@ -100,6 +106,7 @@ class usuariotrabajador {
       "direccion": direccion,
       "telefono":telefono,
       "dni": dni,
+      "fechanacimiento":fechanacimiento,
       "idempleado": idempleado,
       "nif": nif,
       "fechaantiguedad": fechaantiguedad,
@@ -116,6 +123,8 @@ class usuariotrabajador {
       "createat": createat,
       "uploadat": uploadat,
       "imagen":imagen,
+      "hashcontra":hashcontra,
+      "token":token,
     };
   }
   
