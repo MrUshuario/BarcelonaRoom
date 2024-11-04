@@ -1,92 +1,60 @@
 class usuariotrabajador {
-  int? codigoUsuario;
-  String? primernombre;
-  String? segundonombre;
-  String? primerapellido;
-  String? segundoapellido;
+
+  int? id;
+  String? email;
+  String? tipo_usuario;
+  String? primer_nombre;
+  String? segundo_nombre;
+  String? apellido_paterno;
+  String? apellido_materno;
   String? direccion;
   String? telefono;
-  String? dni;
-  String? fechanacimiento;
-  String? idempleado; //esto podria ir a una nueva tabla
-  String? nif;
-  String? fechaantiguedad;
-  String? categoriaprofesional;
-  String? puesto;
-  int? banco;
-  int? sucursal;
-  int? cuenta;
-  int? tipocontrato;
-  int? cnae;
-  String? nroafiliaciones;
-  String? centrotrabajociudad;
-  String? centrotrabajoinfo;
-  String? createat;
-  String? uploadat;
-  String? imagen;
-  String? hashcontra;
+  String? documento;
+  String? fecha_nacimiento;
+  String? imagen_perfil;
+  String? contrasenia;
   String? token;
+  String? created_at;
+  String? updated_at;
 
   //TOKEN verificaiion en otra tabla
 
   usuariotrabajador({
-    this.codigoUsuario,
-    this.primernombre,
-    this.segundonombre,
-    this.primerapellido,
-    this.segundoapellido,
+    this.id,
+    this.email,
+    this.tipo_usuario,
+    this.primer_nombre,
+    this.segundo_nombre,
+    this.apellido_paterno,
+    this.apellido_materno,
     this.direccion,
     this.telefono,
-    this.dni,
-    this.fechanacimiento,
-    this.idempleado,
-    this.nif,
-    this.fechaantiguedad,
-    this.categoriaprofesional,
-    this.puesto,
-    this.banco,
-    this.sucursal,
-    this.cuenta,
-    this.tipocontrato,
-    this.cnae,
-    this.nroafiliaciones,
-    this.centrotrabajociudad,
-    this.centrotrabajoinfo,
-    this.createat,
-    this.uploadat,
-    this.imagen,
-    this.hashcontra,
+    this.documento,
+    this.fecha_nacimiento,
+    this.imagen_perfil,
+    this.contrasenia,
     this.token,
+    this.created_at,
+    this.updated_at,
   });
 
   factory usuariotrabajador.fromJson(dynamic json)  => usuariotrabajador(
-    codigoUsuario: json['codigoUsuario'] as int?,
-    primernombre: json['primernombre'] as String?,
-    segundonombre: json['segundonombre'] as String?,
-    primerapellido: json['primerapellido'] as String?,
-    segundoapellido: json['segundoapellido'] as String?,
+    id: json['id'] as int?,
+    email: json['email'] as String?,
+    tipo_usuario: json['tipo_usuario'] as String?,
+    primer_nombre: json['primer_nombre'] as String?,
+    segundo_nombre: json['segundo_nombre'] as String?,
+    apellido_paterno: json['apellido_paterno'] as String?,
+    apellido_materno: json['apellido_materno'] as String?,
     direccion: json['direccion'] as String?,
     telefono: json['telefono'] as String?,
-    dni: json['dni'] as String?,
-    fechanacimiento: json['fechanacimiento'] as String?,
-    idempleado: json['idempleado'] as String?,
-    nif: json['nif'] as String?,
-    fechaantiguedad: json['fechaantiguedad'] as String?,
-    categoriaprofesional: json['categoriaprofesional'] as String?,
-    puesto: json['puesto'] as String?,
-    banco: json['banco'] as int?,
-    sucursal: json['sucursal'] as int?,
-    cuenta: json['cuenta'] as int?,
-    tipocontrato: json['tipocontrato'] as int?,
-    cnae: json['cnae'] as int?,
-    nroafiliaciones: json['nroafiliaciones'] as String?,
-    centrotrabajociudad: json['centrotrabajociudad'] as String?,
-    centrotrabajoinfo: json['centrotrabajoinfo'] as String?,
-    createat: json['createat'] as String?,
-    uploadat: json['uploadat'] as String?,
-    imagen: json['imagen'] as String?,
-    hashcontra: json['hashcontra'] as String?,
-    token: json['token'] as String?
+    documento: json['documento'] as String?,
+    fecha_nacimiento: json['fecha_nacimiento'] as String?,
+    imagen_perfil: json['imagen_perfil'] as String?,
+    contrasenia: json['contrasenia'] as String?,
+    token: json['token'] as String?,
+    created_at: json['created_at'] as String?,
+    updated_at: json['updated_at'] as String?
   );
 
   static List<usuariotrabajador> listFromJson(dynamic json) {
@@ -98,33 +66,22 @@ class usuariotrabajador {
 
   Map<String, dynamic> toMap() {
     return {
-      "codigoUsuario": codigoUsuario,
-      "primernombre": primernombre,
-      "segundonombre": segundonombre,
-      "primerapellido": primerapellido,
-      "segundoapellido": segundoapellido,
+      "id": id,
+      "email": email,
+      "tipo_usuario": tipo_usuario,
+      "primer_nombre": primer_nombre,
+      "segundo_nombre": segundo_nombre,
+      "apellido_paterno": apellido_paterno,
+      "apellido_materno": apellido_materno,
       "direccion": direccion,
       "telefono":telefono,
-      "dni": dni,
-      "fechanacimiento":fechanacimiento,
-      "idempleado": idempleado,
-      "nif": nif,
-      "fechaantiguedad": fechaantiguedad,
-      "categoriaprofesional": categoriaprofesional,
-      "puesto": puesto,
-      "banco": banco,
-      "sucursal": sucursal,
-      "cuenta": cuenta,
-      "tipocontrato": tipocontrato,
-      "cnae": cnae,
-      "nroafiliaciones": nroafiliaciones,
-      "centrotrabajociudad": centrotrabajociudad,
-      "centrotrabajoinfo": centrotrabajoinfo,
-      "createat": createat,
-      "uploadat": uploadat,
-      "imagen":imagen,
-      "hashcontra":hashcontra,
+      "documento": documento,
+      "fecha_nacimiento":fecha_nacimiento,
+      "imagen_perfil":imagen_perfil,
+      "contrasenia":contrasenia,
       "token":token,
+      "created_at":created_at,
+      "updated_at":updated_at,
     };
   }
   

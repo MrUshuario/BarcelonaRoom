@@ -1,3 +1,4 @@
+/*
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'database.dart';
@@ -164,3 +165,4 @@ class _$FormDataModelDaoApartamento extends FormDataModelDaoApartamento {
         formDataModel, OnConflictStrategy.replace);
   }
 }
+*/

@@ -53,8 +53,15 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 
 class _Usuario_perfil extends State<Usuario_perfil> {
   String? PREFname; //1er nombre 2do nombre apellidos
+  String? PREFnameINICIAL;
   String? PREFcorreo;
   String? PREFtipo;
+  String? PREFdireccion;
+  String? PREFtelefono;
+  String? PREFdocumento;
+  String? PREFFeccreacion;
+  String? PREFFecnacimiento;
+
 
 
   @override
@@ -67,9 +74,16 @@ class _Usuario_perfil extends State<Usuario_perfil> {
   Future<void> cargardata()  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
-      PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
-      PREFtipo = prefs.getString('tipoUsuario') ?? "INVERSOR";
+      PREFname        = prefs.getString('nombre_completo') ?? "USUARIO PRUEBA";
+      PREFnameINICIAL = PREFname!.substring(0, 1);
+      PREFcorreo      = prefs.getString('email') ?? "prueba@gmail.com";
+      PREFtipo        = prefs.getString('tipo_usuario') ?? "INVERSOR";
+      PREFdireccion   = prefs.getString('direccion') ?? "USUARIO PRUEBA";
+      PREFtelefono    = prefs.getString('telefono') ?? "000";
+      PREFdocumento   = prefs.getString('documento') ?? "000";
+      PREFFeccreacion   = prefs.getString('fecha_creacion') ?? "000";
+      PREFFecnacimiento = prefs.getString('fecha_nacimiento') ?? "000";
+
     });
   }
 
@@ -147,10 +161,10 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                       Container(
                       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                       child:
-                      const CircleAvatar(
+                       CircleAvatar(
                         backgroundColor: Colors.blue,
-                        child: Text("A"),
                         maxRadius: 30,
+                        child: Text(PREFname!.substring(0, 1)),
                         //foregroundImage: NetworkImage("enterImageUrl"),
                       ),
                       ),
@@ -206,7 +220,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   child:
                   Column(
                     children: [
-                      HelpersViewLetrasSubs.formItemsDesign("00000008"),
+                      HelpersViewLetrasSubs.formItemsDesign(PREFdocumento!),
                     ],),
                 ),
               ],
@@ -243,7 +257,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   child:
                   Column(
                     children: [
-                      HelpersViewLetrasSubs.formItemsDesign("Mz1 Lt1b"),
+                      HelpersViewLetrasSubs.formItemsDesign(PREFdireccion!),
                     ],),
                 ),
               ],
@@ -315,7 +329,7 @@ class _Usuario_perfil extends State<Usuario_perfil> {
                   child:
                   Column(
                     children: [
-                      HelpersViewLetrasSubs.formItemsDesign("10/10/2024"),
+                      HelpersViewLetrasSubs.formItemsDesign(PREFFeccreacion!),
                     ],),
                 ),
               ],

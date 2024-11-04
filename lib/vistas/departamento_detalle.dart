@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:barcelonaroom/infraestructure/apis/apiprovider_formulario.dart';
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
-import 'package:barcelonaroom/obj/OBJapartamentosDetalle.dart';
+import 'package:barcelonaroom/obj/OBJGrupo_habitacional.dart';
 import 'package:barcelonaroom/utils/HelpersViewAlertaInfo.dart';
 import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
@@ -22,8 +22,8 @@ class Detalle extends StatefulWidget {
     TextEditingController inversion = TextEditingController();
     Apartamento? formData;
     Detalle(this.formData, {super.key});
-    ApartamentoDetalle? fomDetalle;
-    List<String> listaimagenes = List.empty();
+    grupo_habitacional? fomGrupo_habitacional;
+    //List<String> listaimagenes = List.empty();
     List<String> listaimagenesnombres = List.empty();
     apiprovider_formulario apiForm= apiprovider_formulario();
 
@@ -40,26 +40,7 @@ class _Detalle extends State<Detalle> {
   int currentPageIndex = 0;
   @override
   void initState() {
-    traermasdatos();
     super.initState();
-
-  }
-
-  Future<void> traermasdatos()  async {
-    //CargaDialog();
-    ApartamentoDetalle apartamentoEntity  = await widget.apiForm.get_DescargarApartamentoDETALLE(widget.formData?.idDepartamento);
-
-    setState(() {
-      mostrarCargar = false;
-    });
-
-    widget.fomDetalle = apartamentoEntity;
-    widget.listaimagenes = apartamentoEntity.imagenes!.split(",");
-    widget.listaimagenesnombres = apartamentoEntity.imagenes_nombres!.split(",");
-    print("listaimagenesnombres:");
-    print(widget.listaimagenesnombres);
-
-
   }
 
   //ALERTDIALGO API
@@ -380,7 +361,36 @@ class _Detalle extends State<Detalle> {
               widget.listaimagenesnombres.isNotEmpty ?
               ListView.builder(itemCount: widget.listaimagenesnombres!.length,
                 itemBuilder: (context, index) {
-                return Text(widget.listaimagenesnombres![index]);
+                return
+                  //Text(widget.listaimagenesnombres![index]);
+
+                Align(
+                  alignment: Alignment.center,
+                  child: //widget.formData?.urlimagen
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0), // Adjust as desired
+                    child: Image.network(
+                      widget.listaimagenesnombres![index] != null
+                          ? widget.listaimagenesnombres![index]
+                          : 'https://picsum.photos/250?image=3',
+                      width: double.maxFinite,
+                      height: 200.0,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Handle the error here
+                        return
+                          //Center(child: Text('Error loading image'));
+                          Image.network('https://picsum.photos/250?image=3',
+                              width: double.maxFinite,
+                              height: 200.0,
+                              fit: BoxFit.cover
+                          );
+                      },
+                    ),
+                  ),
+
+                );
+
                 },)
                     : Center(
             child: HelpersViewLetrasSubs.formItemsDesign(
@@ -395,8 +405,8 @@ class _Detalle extends State<Detalle> {
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0), // Adjust as desired
               child: Image.network(
-                widget.formData?.imagen != null
-                    ? widget.formData!.imagen!
+                widget.formData?.images![0] != null
+                    ? widget.formData!.images![0]
                     : 'https://picsum.photos/250?image=3',
                 width: double.maxFinite,
                 height: 200.0,
@@ -418,7 +428,7 @@ class _Detalle extends State<Detalle> {
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          Text("${widget.formData?.idDepartamento} Descripción: ${widget.formData?.descripcion}",
+          Text("${widget.formData?.id} Descripción: ${widget.formData?.descripcion}",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -429,7 +439,7 @@ class _Detalle extends State<Detalle> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
           Text(
-            "Precio: ${widget.formData?.precio}",
+            "Precio: ${widget.formData?.mensualidad}",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: const TextStyle(
@@ -549,7 +559,7 @@ class _Detalle extends State<Detalle> {
                 //color: Colors.white,
               ),),
 
-              HelpersViewInputs.formItemsDesignDNI(
+              HelpersViewInputs.formItemsDesigndocumento(
                   TextFormField(
                     controller: widget.inversion,
                     decoration: const InputDecoration(

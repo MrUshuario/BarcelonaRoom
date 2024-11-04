@@ -1,5 +1,5 @@
 class Constants {
-  static const String formatDate = "dd MM yyyy";
+  static const String formatDate = "dd-MM-yyyy";
   static const String titleEditStudent = 'Editar estudiantes';
   static const String titleListStudent = 'Listado de estudiantes';
   static const String titleSearchStudent = 'Buscador estudiantes';
@@ -10,7 +10,7 @@ class Constants {
   static const String patternDepart = r'(^[a-zñA-ZÑ ]*$)';
   static const String patternProvince = r'(^[a-zñA-ZÑ ]*$)';
   static const String patternDistrict = r'(^[a-zñA-ZÑ ]*$)';
-  static const String patternDni = r'(^[0-9]{8,9}$)';
+  static const String patterndocumento = r'(^[0-9]{8,9}$)';
   static const String patternTelefono = r'(^[0-9]{11,11}$)';
   static const String patternAge = r'(^[0-9]{1,2}$)';
   static const String patternDegree = r'(^[0-9]{1,2}$)';

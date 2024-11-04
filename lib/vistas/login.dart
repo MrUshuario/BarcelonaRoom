@@ -27,7 +27,7 @@ const List<String> scopes = <String>[
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   // Optional clientId
-  // clientId: 'your-client_id.apps.googleusercontent.com',
+  clientId: 'gov.es.barcelona.approom.barcelonaroom',
   scopes: scopes,
 );
 
@@ -77,7 +77,7 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 
 
 class _login extends State<login> {
-
+  bool mostrarCargar = false;
   GoogleSignInAccount? _currentUser;
   bool _isAuthorized = false; // has granted permissions?
   String _contactText = '';
@@ -108,8 +108,7 @@ class _login extends State<login> {
   }
 
   Future<void> initializeDatabase() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,);
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   }
 
   //FUNCION PRINCIPAL DEL LOGEO!
@@ -117,27 +116,20 @@ class _login extends State<login> {
     try {
       _currentUser = await _googleSignIn.signIn();
 
-
       if (_currentUser != null) {
         String? correoname = _currentUser?.email;
         String? id = _currentUser?.id;
+        String? token = _currentUser?.serverAuthCode;
 
         if (correoname != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-
-          await prefs.setString('Correoname', correoname!);
 
           usuariotrabajador resp = usuariotrabajador();
-          resp = await widget.apiForm.post_Login(correoname,id!,"CONTRA");
-          print("ENVIADO API");
-          print(resp.primernombre);
-          if(resp.primernombre! == "errorNOENVIADO"){
-            AvisoDialog("No se encontro registro");
-          } else {
-            await prefs.setString('name', "${resp.primernombre!} ${resp.segundonombre!} ${resp.primerapellido!} ${resp.segundoapellido!}");
-            await prefs.setString('tipoUsuario', resp.puesto!);
-            await prefs.setString('token', resp.token!);
+          resp = await widget.apiForm.post_Login(correoname,id!,"google");
+          if(resp.primer_nombre! == "errorNOENVIADO"){
 
+            AvisoDialog(resp.token!);
+
+          } else {
             //GUARDAR DATOS
             Navigator.push(
               context,
@@ -296,66 +288,239 @@ class _login extends State<login> {
 
 
   Widget formUI() {
-    final GoogleSignInAccount? user = _currentUser;
-    if (user != null) {
-      return Column(
-          children: <Widget>[
-            GestureDetector(
-                onTap: ()  {
-                  //BOTON GOOGLE
-                  //_handleSignIn();
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(10.0),
-                  alignment: Alignment.center,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    color: Resources.AzulTema,
-                  ),
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
-                  child: const Text("GOOGLE SIGN",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500)),
-                )),
-          ],
-      );
-    } else {
       return Column(
         children: <Widget>[
 
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                /*
+          Visibility(
+            visible: mostrarCargar,
+            child:
+            Container(
+              width: MediaQuery.of(context).size.height * 0.080,
+              height: MediaQuery.of(context).size.height * 0.080,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.grey,
+                valueColor: AlwaysStoppedAnimation(Resources.AzulTema),
+                strokeWidth: 10,
+              ),
+            ),
+          ),
+
+          /*Visibility(
+            visible: mostrarCargar!,
+            child: */
+            Column(
+              children: <Widget>[
+                Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      /*
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.blue,
                       width: 2.0,
                     ),
                   ), */
-                margin: EdgeInsets.only(top: 10),
-                child: Image.asset( Resources.loginlogo,
-                  width: 250,
-                  height: 60,),
-              )),
+                      margin: EdgeInsets.only(top: 10),
+                      child: Image.asset( Resources.loginlogo,
+                        width: 250,
+                        height: 60,),
+                    )),
 
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                //margin: EdgeInsets.only(bottom: 20),
-                child: Image.asset( Resources.siContigo,
-                  width: 250,
-                  height: 100,),
-              )),
+                Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      //margin: EdgeInsets.only(bottom: 20),
+                      child: Image.asset( Resources.siContigo,
+                        width: 250,
+                        height: 100,),
+                    )),
 
-          //TESTEO
-          Visibility(
-            visible: _isAuthorized,
-            child: const Text("AUTORIZADO TESTEO"),
-          ),
+                //TESTEO
+                Visibility(
+                  visible: _isAuthorized,
+                  child: const Text("AUTORIZADO TESTEO"),
+                ),
+
+                HelpersViewInputs.formItemsDesignloginIcon(
+                  Icons.email,
+                  Center(
+                    child: TextFormField(
+                      controller: widget.formUsuarioCtrl,
+                      maxLength: 50,
+                      decoration: InputDecoration(
+                        hintText: "Correo electronico",
+                      ),
+                    ),
+                  ),
+                ),
+
+
+                Card(
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    //side: BorderSide(color: Color.fromARGB(255, 45, 55, 207)), // Red border
+                    side: BorderSide(color: Colors.black), // Red border
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0), // Optional padding
+                    child: Center( // Center the text field content
+                      child: TextFormField(
+                        controller: widget.formClaveCtrl,
+                        obscureText: widget._isPasswordVisible,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                          hintText: "Ingrese su contraseña",
+                          counterText: "",
+                          suffixIcon: PasswordVisibilityToggle(
+                            isPasswordVisible: widget._isPasswordVisible,
+                            onToggle: () {
+                              setState(() {
+                                widget._isPasswordVisible = !widget._isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                GestureDetector(
+                    onTap: () async {
+
+                      //String usuario = widget.formUsuarioCtrl.text!.toUpperCase();
+                      String usuario = widget.formUsuarioCtrl.text!;
+                      String contra = widget.formClaveCtrl.text!;
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                      if(usuario == "ALBERTO" && contra == "alberto"){
+
+                        await prefs.setString('nombre_completo', "Alberto");
+                        await prefs.setString('email', "alberto@gmail.com");
+                        await prefs.setString('tipo_usuario', "INVERSOR"); //INTERMEDIARIO
+                        await prefs.setString('direccion', "PRUEBA DIRECCION");
+                        await prefs.setString('telefono', "PRUEBA TELEFONO");
+                        await prefs.setString('documento', "99999999");
+                        await prefs.setString('fecha_creacion', "24-12-1999");
+                        await prefs.setString('fecha_nacimiento', "24-12-1999");
+                        await prefs.setInt('id', 1);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  Home()),
+                        );
+
+                      } else if (usuario == "" || contra == "") {
+                        AvisoDialog("Rellene adecuadamente el usuario");
+                      } else {
+
+                        usuariotrabajador resp = usuariotrabajador();
+                        setState(() {
+                          mostrarCargar = true;
+                        });
+                        resp = await widget.apiForm.post_Login(usuario,contra,"CONTRA");
+
+
+
+                        if(resp.primer_nombre! == "errorNOENVIADO"){
+
+                          setState(() {
+                            mostrarCargar = false;
+                          });
+
+                          AvisoDialog(resp.token!);
+
+                        } else {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>  Home()),
+                          );
+
+                        }
+
+                      }
+                    },
+                    child: Container(
+                      //margin: const EdgeInsets.all(30.0),
+                      margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        color: Resources.AzulTema,
+                      ),
+                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      child: const Text("Ingresar",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500)),
+                    )),
+
+                GestureDetector(
+                    onTap: () async {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  Crear_cuenta()),
+                      );
+
+
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        color: Resources.AzulTema,
+                      ),
+                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      child: const Text("Crear cuenta",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500)),
+                    )),
+
+                HelpersViewLetrasSubs.formItemsDesign2("Ingreso con redes sociales"),
+
+                Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child:           IconButton(
+                            icon: Icon(FontAwesomeIcons.google, size: 50.0, color: Colors.black),
+                            onPressed: () async {
+                              await _handleSignIn();
+                              //GOOGLE INGRESO
+
+                            }
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 4,
+                        child:           IconButton(
+                            icon: Icon(FontAwesomeIcons.facebook, size: 50.0, color: Colors.black),
+                            onPressed: () async {
+                              await _handleSignIn();
+                              //FACEBOOK INGRESO
+
+                            }
+                        ),
+                      ),
+
+                    ]),
+              ],
+            ),
+          //),
+
+
+
+
 
           //ENTRADA SIGILOSA
           /*
@@ -381,191 +546,8 @@ class _login extends State<login> {
 
            */
 
-          HelpersViewInputs.formItemsDesignloginIcon(
-            Icons.email,
-            Center(
-              child: TextFormField(
-                controller: widget.formUsuarioCtrl,
-                maxLength: 50,
-                decoration: InputDecoration(
-                hintText: "Correo electronico",
-                ),
-              ),
-            ),
-          ),
-
-
-          Card(
-            elevation: 0,
-            shape: const RoundedRectangleBorder(
-              //side: BorderSide(color: Color.fromARGB(255, 45, 55, 207)), // Red border
-              side: BorderSide(color: Colors.black), // Red border
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0), // Optional padding
-              child: Center( // Center the text field content
-                child: TextFormField(
-                  controller: widget.formClaveCtrl,
-                  obscureText: widget._isPasswordVisible,
-                  maxLength: 20,
-                  decoration: InputDecoration(
-                    hintText: "Ingrese su contraseña",
-                    counterText: "",
-                    suffixIcon: PasswordVisibilityToggle(
-                      isPasswordVisible: widget._isPasswordVisible,
-                      onToggle: () {
-                        setState(() {
-                          widget._isPasswordVisible = !widget._isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          GestureDetector(
-              onTap: () async {
-                //CargaDialog();
-
-                //String usuario = widget.formUsuarioCtrl.text!.toUpperCase();
-                String usuario = widget.formUsuarioCtrl.text!;
-                String contra = widget.formClaveCtrl.text!;
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                if(usuario == "ALBERTO" && contra == "alberto"){
-
-                  await prefs.setString('name', "Alberto");
-                  await prefs.setString('Correoname', "alberto@gmail.com");
-                  await prefs.setString('tipoUsuario', "Huesped"); //INTERMEDIARIO
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  Home()),
-                  );
-
-                } else if (usuario == "" || contra == "") {
-                  AvisoDialog("Rellene adecuadamente el usuario");
-                } else {
-
-                  // Use the username as needed
-
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                  await prefs.setString('Correoname', usuario);
-                  //AQUI DEBERIA ENVIAR UN API Y PONER DEMAS DATOS A RECIBIR
-                  //API
-                  usuariotrabajador resp = usuariotrabajador();
-                  resp = await widget.apiForm.post_Login(usuario,contra,"CONTRA");
-                  print("ENVIADO API");
-                  print(resp.primernombre);
-
-                  if(resp.primernombre! == ""){
-                    AvisoDialog("No se encontro registro");
-                  } else {
-                    await prefs.setString('name', "${resp.primernombre!} ${resp.segundonombre!} ${resp.primerapellido!} ${resp.segundoapellido!}");
-                    await prefs.setString('tipoUsuario', resp.puesto!);
-                    await prefs.setString('token', resp.token!);
-
-                    //GUARDAR DATOS
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>  Home()),
-                    );
-                  }
-
-
-
-                  AvisoDialog("Este usuario no existe");
-                }
-              },
-              child: Container(
-                //margin: const EdgeInsets.all(30.0),
-                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  color: Resources.AzulTema,
-                ),
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
-                child: const Text("Ingresar",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500)),
-              )),
-
-          GestureDetector(
-              onTap: () async {
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>  Crear_cuenta()),
-                );
-
-
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  color: Resources.AzulTema,
-                ),
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
-                child: const Text("Crear cuenta",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500)),
-              )),
-
-          HelpersViewLetrasSubs.formItemsDesign2("Ingreso con redes sociales"),
-
-          Row(
-          children: [
-            Expanded(
-            flex: 4,
-            child:           IconButton(
-                icon: Icon(FontAwesomeIcons.google, size: 50.0, color: Colors.black),
-                onPressed: () async {
-                  await _handleSignIn();
-                  //GOOGLE INGRESO
-
-                  //BORRAR!!
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                  //BORAR DESPUES
-                }
-            ),
-            ),
-
-            Expanded(
-              flex: 4,
-              child:           IconButton(
-                  icon: Icon(FontAwesomeIcons.facebook, size: 50.0, color: Colors.black),
-                  onPressed: () async {
-                    await _handleSignIn();
-                    //FACEBOOK INGRESO
-
-                  }
-              ),
-            ),
-
-          ]),
-
-
-
         ],
       );
-    }
-
   }
 
 

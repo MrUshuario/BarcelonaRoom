@@ -3,9 +3,9 @@ import 'package:barcelonaroom/vistas/home.dart';
 import 'package:flutter/material.dart';
 
 
-class HelpersViewAlertProgressCircleDos extends StatelessWidget {
+class HelpersViewAlertProgressCircleSINOPCION extends StatelessWidget {
 
-    const HelpersViewAlertProgressCircleDos({super.key,
+    const HelpersViewAlertProgressCircleSINOPCION({super.key,
       required this.mostrar,
       required this.texto,
     });
@@ -62,7 +62,7 @@ class HelpersViewAlertProgressCircleDos extends StatelessWidget {
                         Icon(Icons.info_outline, color: Colors.black,),
                         Expanded(
                           child: Text(
-                            "Mensaje informativo",
+                            "Mensaje Informativo",
                             style: TextStyle(fontSize: 20),
                           ),
                         ),
@@ -80,7 +80,7 @@ class HelpersViewAlertProgressCircleDos extends StatelessWidget {
                         Expanded(
                             child: Text (texto, style: TextStyle(fontSize: 16),)
                         ),
-                        const Icon(Icons.save, color: Colors.blue,)
+                        const Icon(Icons.person, color: Colors.black,)
                       ],
                     ),
                   ),
@@ -90,6 +90,7 @@ class HelpersViewAlertProgressCircleDos extends StatelessWidget {
                   // Align row to the end
                   children: [
                     Spacer(), // Push remaining space to the left
+
 
                     InkWell(
                       onTap: () {

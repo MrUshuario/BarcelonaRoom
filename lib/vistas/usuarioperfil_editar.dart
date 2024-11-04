@@ -44,7 +44,7 @@ class Usuario_perfileditar extends StatefulWidget {
   final formApePParamValidateForm       = List.filled(3, "", growable: false);
   final formDirrecionParamValidateForm  = List.filled(3, "", growable: false);
   final formCorreoParamValidateForm     = List.filled(3, "", growable: false);
-  final formDNIParamValidateForm        = List.filled(3, "", growable: false);
+  final formdocumentoParamValidateForm        = List.filled(3, "", growable: false);
   final formContraParamValidateForm     = List.filled(3, "", growable: false);
   final formContra2ParamValidateForm    = List.filled(3, "", growable: false);
   final formTelefonoParamValidateForm   = List.filled(3, "", growable: false);
@@ -81,6 +81,8 @@ class _PasswordVisibilityToggleState extends State<PasswordVisibilityToggle> {
 
 class _Usuario_perfileditar extends State<Usuario_perfileditar> {
   int? PREFidUsuario;
+  String? PREFcorreo;
+
   @override
   void initState() {
     cargardatos();
@@ -91,8 +93,8 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
   Future<void> cargardatos()  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      PREFidUsuario = prefs.getInt('id') ?? 1;
-      //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
+      PREFidUsuario = prefs.getInt('id_usuario') ?? 1;
+      PREFcorreo = prefs.getString('email') ?? "prueba@gmail.com";
     });
   }
 
@@ -170,15 +172,34 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
                     Navigator.pop(context); // Cierra el diálogo
                     CargaDialog();
                     //HACER EL ENVIO DE DATA
-                    var apiResult = await widget.apiForm.post_EnviarUsuario(widget.modoficarusuario);
+                    var resp = await widget.apiForm.post_ModidicarUsuario(widget.modoficarusuario);
                     _mostrarLoadingStreamController.add(true);
-                    if (apiResult.coMensaje != "") {
-                      displayDialog("Mensaje informatibo",apiResult.descMensaje);
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    if (resp.token == "ERROR") {
+                      _mostrarLoadingStreamController.add(true);
+                      _mostrarLoadingStreamControllerTEXTO.add("Ocurrio un error en la base de datos");
                     } else {
-                      displayDialog("Error de envio", "Hubo un problema con la data");
+                      _mostrarLoadingStreamController.add(true);
+                      _mostrarLoadingStreamControllerTEXTO.add("Envio éxitoso. Verifique su correo");
+
+                      await prefs.setString('email', resp.email!);
+                      await prefs.setString('nombre_completo', "${resp.primer_nombre!} ${resp.segundo_nombre!} ${resp.apellido_paterno!} ${resp.apellido_materno!}");
+                      await prefs.setString('tipo_usuario', resp.tipo_usuario!);
+                      await prefs.setString('token', resp.token!);
+                      await prefs.setString('direccion', resp.direccion!);
+                      await prefs.setString('telefono', resp.telefono!);
+                      await prefs.setString('documento', resp.documento!);
+
+
+                      //GUARDAR DATOS
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  Home()),
+                      );
+
                     }
                     _mostrarLoadingStreamController.add(true);
-
+                    _mostrarLoadingStreamControllerTEXTO.add("Ocurrio un error en la base de datos");
                   },
                   child: const Text('Sí',
                     style: TextStyle(
@@ -247,17 +268,26 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
 
   //ALERTDIALGO API
   final _mostrarLoadingStreamController = StreamController<bool>.broadcast();
+  final _mostrarLoadingStreamControllerTEXTO = StreamController<String>.broadcast();
   void CargaDialog() {
     bool mostrarLOADING = false;
+    String texto = "Envio Fallido";
     showDialog(
       barrierDismissible: mostrarLOADING,
       context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
+
             _mostrarLoadingStreamController.stream.listen((value) {
               setState(() {
                 mostrarLOADING = value;
+              });
+            });
+
+            _mostrarLoadingStreamControllerTEXTO.stream.listen((value) {
+              setState(() {
+                texto = value;
               });
             });
 
@@ -647,18 +677,18 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
 
                   //formContra2
                   setState(() {
-                    widget.modoficarusuario.codigoUsuario = PREFidUsuario; // POR EL MOMENTO
-                    widget.modoficarusuario.primernombre = widget.formNombre1.text;
-                    widget.modoficarusuario.segundonombre= widget.formNombre2.text;
-                    widget.modoficarusuario.primerapellido= widget.formApeP.text;
-                    widget.modoficarusuario.segundoapellido= widget.formApeM.text;
+                    widget.modoficarusuario.id = PREFidUsuario; // POR EL MOMENTO
+                    widget.modoficarusuario.primer_nombre = widget.formNombre1.text;
+                    widget.modoficarusuario.segundo_nombre= widget.formNombre2.text;
+                    widget.modoficarusuario.apellido_paterno= widget.formApeP.text;
+                    widget.modoficarusuario.apellido_materno= widget.formApeM.text;
                     widget.modoficarusuario.direccion = widget.formDirrecion.text;
                     widget.modoficarusuario.telefono= widget.formTelefono.text;
-                    widget.modoficarusuario.imagen= widget.base64String;
+                    widget.modoficarusuario.imagen_perfil= widget.base64String;
                   });
 
                   //formTelefono
-                  //widget.modoficarusuario.dni;
+                  //widget.modoficarusuario.documento;
                   //widget.modoficarusuario.idempleado;
                   //widget.modoficarusuario.nif;
                   //widget.modoficarusuario.fechaantiguedad;
@@ -672,7 +702,7 @@ class _Usuario_perfileditar extends State<Usuario_perfileditar> {
                   //widget.modoficarusuario.nroafiliaciones;
                   //widget.modoficarusuario.centrotrabajociudad;
                   //widget.modoficarusuario.centrotrabajoinfo;
-                  //widget.modoficarusuario.createat;
+                  //widget.modoficarusuario.create_at;
                   //widget.modoficarusuario.uploadat;
                   //widget.modoficarusuario.token;
                   ConfirmarDialog();

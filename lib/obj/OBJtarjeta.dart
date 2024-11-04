@@ -1,6 +1,6 @@
 class Tarjeta {
   int? codigotarjeta;
-  int? codigoUsuario; //CLAVE FORANEA
+  int? id_usuario; //CLAVE FORANEA
   String? numero;
   String? numeroinicio;
   String? numeroseguridad;
@@ -12,7 +12,7 @@ class Tarjeta {
 
   Tarjeta({
     this.codigotarjeta,
-    this.codigoUsuario,
+    this.id_usuario,
     this.numero,
     this.numeroinicio,
     this.numeroseguridad,
@@ -24,7 +24,7 @@ class Tarjeta {
 
   factory Tarjeta.fromJson(dynamic json)  => Tarjeta(
     codigotarjeta: json['codigotarjeta'] as int?,
-    codigoUsuario: json['codigoUsuario'] as int?,
+    id_usuario: json['id_usuario'] as int?,
     numero: json['numero'] as String?,
     numeroinicio: json['numeroinicio'] as String?,
     numeroseguridad: json['numeroseguridad'] as String?,
@@ -43,7 +43,7 @@ class Tarjeta {
   Map<String, dynamic> toMap() {
     return {
       "codigotarjeta": codigotarjeta,
-      "codigoUsuario":codigoUsuario,
+      "id_usuario":id_usuario,
       "numeroinicio":numeroinicio,
       "numero": numero,
       "numeroseguridad": numeroseguridad,

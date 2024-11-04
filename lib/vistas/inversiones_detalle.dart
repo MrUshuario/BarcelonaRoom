@@ -405,7 +405,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                 //color: Colors.white,
               ),),
 
-              HelpersViewInputs.formItemsDesignDNI(
+              HelpersViewInputs.formItemsDesigndocumento(
                   TextFormField(
                     controller: widget.montoInvertir,
                     decoration: const InputDecoration(
@@ -456,7 +456,7 @@ class _Inversiondetalle extends State<Inversiondetalle> {
                 //color: Colors.white,
               ),),
 
-              HelpersViewInputs.formItemsDesignDNI(
+              HelpersViewInputs.formItemsDesigndocumento(
                   TextFormField(
                     controller: widget.montoRetirar,
                     decoration: const InputDecoration(

@@ -62,7 +62,7 @@ class HelpersViewAlertProgressCircle extends StatelessWidget {
                         Icon(Icons.info_outline, color: Colors.black,),
                         Expanded(
                           child: Text(
-                            "Guardado Completado",
+                            "Mensaje Informativo",
                             style: TextStyle(fontSize: 20),
                           ),
                         ),

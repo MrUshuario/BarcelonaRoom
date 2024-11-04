@@ -18,6 +18,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/helpersviewAlertProgressCircleSINOPCION.dart';
 
 
 
@@ -30,7 +33,7 @@ class Crear_cuenta extends StatefulWidget {
   TextEditingController formApeM = TextEditingController();
   TextEditingController formDirrecion= TextEditingController();
   TextEditingController formCorreo = TextEditingController();
-  TextEditingController formDNI= TextEditingController();
+  TextEditingController formdocumento= TextEditingController();
   TextEditingController formContra = TextEditingController();
   TextEditingController formContra2 = TextEditingController();
   TextEditingController formFechaNac = TextEditingController();
@@ -43,7 +46,7 @@ class Crear_cuenta extends StatefulWidget {
   final formApePParamValidateForm       = List.filled(3, "", growable: false);
   final formDirrecionParamValidateForm  = List.filled(3, "", growable: false);
   final formCorreoParamValidateForm     = List.filled(3, "", growable: false);
-  final formDNIParamValidateForm        = List.filled(3, "", growable: false);
+  final formdocumentoParamValidateForm        = List.filled(3, "", growable: false);
   final formContraParamValidateForm     = List.filled(3, "", growable: false);
   final formTelefonoParamValidateForm   = List.filled(3, "", growable: false);
 
@@ -66,9 +69,9 @@ class _Crear_cuenta extends State<Crear_cuenta> {
     widget.formApePParamValidateForm[1] = "Apellido obligatorio";
     widget.formApePParamValidateForm[2] = "Formato incorrecto. [a-z] y [A-Z]";
 
-    widget.formDNIParamValidateForm[0] = Constants.patternDni;
-    widget.formDNIParamValidateForm[1] = "DNI obligatorios";
-    widget.formDNIParamValidateForm[2] = "Formato incorrecto. [0-9] de longitud 8 o 9";
+    widget.formdocumentoParamValidateForm[0] = Constants.patterndocumento;
+    widget.formdocumentoParamValidateForm[1] = "documento obligatorios";
+    widget.formdocumentoParamValidateForm[2] = "Formato incorrecto. [0-9] de longitud 8 o 9";
 
     widget.formTelefonoParamValidateForm[0] = Constants.patternTelefono;
     widget.formTelefonoParamValidateForm[1] = "Telefono obligatorios";
@@ -81,7 +84,7 @@ class _Crear_cuenta extends State<Crear_cuenta> {
 
     widget.formContraParamValidateForm[0] = Constants.patterncontra;
     widget.formContraParamValidateForm[1] = "Contraseña obligatorios";
-    widget.formContraParamValidateForm[2] = "Contraseña requiere almenos un parámetro especial";
+    widget.formContraParamValidateForm[2] = "Almenos una mayuscula/tecla especial y 8 caracteres";
 
 
 
@@ -149,7 +152,7 @@ class _Crear_cuenta extends State<Crear_cuenta> {
               content: SingleChildScrollView(
                 child: Column(
                   children: [
-                    HelpersViewAlertProgressCircle(
+                    HelpersViewAlertProgressCircleSINOPCION(
                       mostrar: mostrarLOADING,
                       texto: texto,
                     ),
@@ -317,10 +320,10 @@ class _Crear_cuenta extends State<Crear_cuenta> {
             Icons.person,
             Center(
               child: TextFormField(
-                controller: widget.formDNI,
+                controller: widget.formdocumento,
                 validator: (value) {
                   return HelpersViewInputs.validateField(
-                      value!, widget.formDNIParamValidateForm);
+                      value!, widget.formdocumentoParamValidateForm);
                 },
                 maxLength: 8,
                 decoration: const InputDecoration(
@@ -383,7 +386,7 @@ class _Crear_cuenta extends State<Crear_cuenta> {
                 readOnly: true,
                 controller: widget.formFechaNac,
                 decoration: const InputDecoration(
-                  labelText: 'Fecha de Matrícula',
+                  labelText: 'Fecha de Nacimiento',
                 ),
                 validator: (value) {
                   return HelpersViewInputs.validateField(
@@ -428,7 +431,7 @@ class _Crear_cuenta extends State<Crear_cuenta> {
 
           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-          HelpersViewLetrasSubs.formItemsDesign("Contraseña"),
+          HelpersViewLetrasSubs.formItemsDesign("Contraseña (requiere almenos 8 caracteres)"),
           HelpersViewInputs.formItemsDesignInput(
             Icons.key,
             Center( // Center the text field content
@@ -495,32 +498,44 @@ class _Crear_cuenta extends State<Crear_cuenta> {
 
                 if (widget.keyForm.currentState!.validate()) {
 
-                  //widget.modoficarusuario.codigoUsuario = PREFidUsuario
-                  widget.nuevousuario.primernombre = widget.formNombre1.text;
-                  widget.nuevousuario.segundonombre= widget.formNombre2.text;
-                  widget.nuevousuario.primerapellido= widget.formApeP.text;
-                  widget.nuevousuario.segundoapellido= widget.formApeM.text;
+                  //widget.modoficarusuario.id_usuario = PREFidUsuario
+                  widget.nuevousuario.primer_nombre = widget.formNombre1.text;
+                  widget.nuevousuario.segundo_nombre= widget.formNombre2.text;
+                  widget.nuevousuario.apellido_paterno= widget.formApeP.text;
+                  widget.nuevousuario.apellido_materno= widget.formApeM.text;
                   widget.nuevousuario.direccion = widget.formDirrecion.text;
+                  widget.nuevousuario.email = widget.formCorreo.text;
                   widget.nuevousuario.telefono= widget.formTelefono.text;
-                  widget.nuevousuario.fechanacimiento= widget.formFechaNac.text;
+                  widget.nuevousuario.fecha_nacimiento= widget.formFechaNac.text;
+                  widget.nuevousuario.documento= widget.formdocumento.text;
+                  widget.nuevousuario.tipo_usuario= "arrendatario";
+
                   var bytes1 = utf8.encode(widget.formContra.text);
                   var hash = sha256.convert(bytes1);
-                  widget.nuevousuario.hashcontra= hash.toString();
+                  widget.nuevousuario.contrasenia= hash.toString();
 
                   widget.keyForm.currentState!.reset();
-                  respFormato resp = respFormato();
+                  usuariotrabajador resp = usuariotrabajador();
                   CargaDialog();
-                  resp = await widget.apiForm.post_EnviarUsuario(widget.nuevousuario);
 
-                  if(resp.coMensaje == "Ocurrio un error en el envio"){
+                  resp = await widget.apiForm.post_CrearUsuario(widget.nuevousuario);
+
+                  if(resp.token == "ERROR"){
                     _mostrarLoadingStreamController.add(true);
-                    _mostrarLoadingStreamControllerTEXTO.add("Ocurrio un error en la base de datos");
+                    _mostrarLoadingStreamControllerTEXTO.add(resp.primer_nombre!);
+
                   } else {
+
                     _mostrarLoadingStreamController.add(true);
-                    _mostrarLoadingStreamControllerTEXTO.add("Envio éxitoso. Verifique su correo");
+                    _mostrarLoadingStreamControllerTEXTO.add("Se ha logrado crear la cuenta");
+
+                    //GUARDAR DATOS
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  Home()),
+                    );
+
                   }
-
-
 
                 } else {
                   displayDialog(
@@ -540,7 +555,7 @@ class _Crear_cuenta extends State<Crear_cuenta> {
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const Text("Crear Cuenta",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500)),
               )),

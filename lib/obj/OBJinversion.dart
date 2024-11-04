@@ -2,7 +2,7 @@ class AportacionEmpresarial {
   int? codigoInversion; //LLAVE
   int? idDepartamento; //FK OBJapartamentos
   int? codigoaportacion;  //FK OBJimporte
-  int? codigoUsuario; //FK OBJUsuario
+  int? id_usuario; //FK OBJUsuario
   String? codigoFondo;
   String? nombreInversion;
   int? montoInversion;
@@ -15,7 +15,7 @@ class AportacionEmpresarial {
     this.codigoInversion,
     this.idDepartamento, //FK
     this.codigoaportacion,  //FK
-    this.codigoUsuario, //FK
+    this.id_usuario, //FK
     this.codigoFondo,
     this.nombreInversion,
     this.montoInversion,
@@ -28,7 +28,7 @@ class AportacionEmpresarial {
     codigoInversion: json['codigoInversion'] as int?,
     idDepartamento: json['idDepartamento'] as int?,
     codigoaportacion: json['codigoaportacion'] as int?,
-    codigoUsuario: json['codigoUsuario'] as int?,
+    id_usuario: json['id_usuario'] as int?,
     codigoFondo: json['codigoFondo'] as String?,
     nombreInversion: json['nombreInversion'] as String?,
     montoInversion: json['montoInversion'] as int?,
@@ -49,7 +49,7 @@ class AportacionEmpresarial {
       "codigoInversion": codigoInversion,
       "idDepartamento": idDepartamento,
       "codigoaportacion": codigoaportacion,
-      "codigoUsuario": codigoUsuario,
+      "id_usuario": id_usuario,
       "codigoFondo": codigoFondo,
       "nombreInversion": nombreInversion,
       "montoInversion":montoInversion,

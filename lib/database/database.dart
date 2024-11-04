@@ -1,5 +1,5 @@
+/*
 import 'dart:async';
-
 import 'package:barcelonaroom/obj/OBJapartamentos.dart';
 import 'package:barcelonaroom/obj/sql/formdatamodeldao_formulario.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
@@ -12,4 +12,4 @@ part 'database.g.dart';
 
 abstract class AppDatabase extends FloorDatabase {
   FormDataModelDaoApartamento get  formDataModelDaoApartamento;
-}
+}*/

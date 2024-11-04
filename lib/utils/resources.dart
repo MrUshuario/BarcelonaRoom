@@ -8,7 +8,7 @@ class Resources {
   static const String fondo =             "assets/bg.png";
   static const String google =            "assets/google.png";
   static const String siContigo = 'assets/logoIcon.png';
-  static const String loginlogo = 'assets/loginlogo.png';
+  static const String loginlogo = 'assets/loginLogo.png';
 
   static const Color fondoBlanquiso = const Color.fromARGB(255, 245, 245, 245);
   static const Color AzulTema = const Color.fromARGB(255, 64, 82, 214);

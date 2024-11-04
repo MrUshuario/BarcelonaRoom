@@ -13,7 +13,7 @@ import '../utils/helpers.dart';
 
 
 
-class crear_departamento extends StatefulWidget {
+class mis_departamentos extends StatefulWidget {
 
   bool parte1 = true;
   bool parte2 = true;
@@ -25,19 +25,22 @@ class crear_departamento extends StatefulWidget {
   final ParamP03EspecificarCtrl = List.filled(3, "", growable: false);
 
   @override
-  State<StatefulWidget> createState() => _crear_departamento();
+  State<StatefulWidget> createState() => _mis_departamentos();
+
+
+
 }
 
 enum TipoEmprendimiento {Si, No}
 
-class _crear_departamento extends State<crear_departamento> {
+class _mis_departamentos extends State<mis_departamentos> {
 
   String? horaFecha;
   String? PREFnroDoc;
   String? PREFtoken;
 
   TipoEmprendimiento? _TipoEmprendimiento;
-
+  
   @override
   void initState() {
     datosiniciales();

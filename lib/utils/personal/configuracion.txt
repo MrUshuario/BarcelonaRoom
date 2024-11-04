@@ -44,9 +44,20 @@ https://pub.dev/packages/google_sign_in/install
 
 1) Enviar imagenes en BASE64 y luego el servidor enviaria URL
 2) Hacer el envio del Login y luego el modificar de los datos del usuario
-3) tipoUsuario para distinguir UI/UX
+3) tipo_usuario para distinguir UI/UX
 
 
 (el que invierte es arrendador)
 Arrendatario, inversor, en el movil
 Usuario Empresa
+
+prueba@gmail.com
+b41af4c157c87c6c8278ec45127c235fb5c991288e6a07da88b87549076acf02
+lenonpoma@gmail.com
+1234567aA
+b41af4c157c87c6c8278ec45127c235fb5c991288e6a07da88b87549076acf02
+
+//CODIGO
+ si llega null para evitarproblemas poner:
+
+ HelpersViewLetrasSubs.formItemsDesignSubSinexpandir(widget.listApartamentos[index].mensualidad ?? 'SIN DEFINIR PRECIO', "€"),

@@ -82,7 +82,7 @@ class HelpersViewLetrasSubs {
     );
   }
 
-  static Widget formItemsDesignSubSinexpandir(String text, String text2) {
+  static Widget formItemsDesignSubSinexpandir(String? text, String text2) {
     return   Row(
       mainAxisAlignment: MainAxisAlignment.start, // Align content to the left
       children: [

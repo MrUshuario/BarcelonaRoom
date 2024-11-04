@@ -6,7 +6,7 @@ class AportacionEmpresarial {
   double? base;
   double? tipo;
   double? impuesto;
-  String? createat;
+  String? create_at;
   String? uploadat;
 
 

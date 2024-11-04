@@ -82,7 +82,7 @@ class HelpersViewInputs{
     );
   }
 
-  static Widget formItemsDesignDNI(item, context) {
+  static Widget formItemsDesigndocumento(item, context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.35,
       padding: const EdgeInsets.symmetric(vertical: 7),

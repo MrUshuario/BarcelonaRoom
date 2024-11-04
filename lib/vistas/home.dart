@@ -9,6 +9,7 @@ import 'package:barcelonaroom/utils/helpersviewAlertProgressCircle.dart';
 import 'package:barcelonaroom/utils/helpersviewInputs.dart';
 import 'package:barcelonaroom/utils/helpersviewLetrasSubs.dart';
 import 'package:barcelonaroom/utils/resources.dart';
+import 'package:barcelonaroom/vistas/crear_departamento.dart';
 import 'package:barcelonaroom/vistas/departamento_detalle.dart';
 import 'package:barcelonaroom/vistas/opciones_cartera.dart';
 import 'package:barcelonaroom/vistas/usuarioperfil.dart';
@@ -25,6 +26,8 @@ import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'mis_departamentos.dart';
 
 
 
@@ -61,6 +64,8 @@ class Home extends StatefulWidget {
   bool activadoSinAlquilar= false;
   bool activadoGaraje = false;
   bool activadoZonaTuristica = false;
+
+
 
   Color botoniconDesactivado = const Color.fromARGB(255, 255, 191, 0);
   Color botoniconActivado = const Color.fromARGB(255, 164, 181, 236);
@@ -105,15 +110,15 @@ class _Home extends State<Home> {
   Future<void> cargardatosiniciales()  async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      PREFname = prefs.getString('name') ?? "USUARIO PRUEBA";
-      PREFtipo = prefs.getString('tipoUsuario') ?? "INVERSOR";
-      //PREFcorreo = prefs.getString('Correoname') ?? "prueba@gmail.com";
+      PREFname = prefs.getString('nombre_completo') ?? "USUARIO PRUEBA";
+      PREFtipo = prefs.getString('tipo_usuario') ?? "INVERSOR";
+      //PREFcorreo = prefs.getString('email') ?? "prueba@gmail.com";
     });
 
-    if(PREFtipo == "INTERMEDIARIO"){
+    if(PREFtipo == "INVERSOR"){
+      VistaUsuarioDepartamento= true;
+    } else  if(PREFtipo == "arrendatario"){
       VistaUsuarioIntermediario = true;
-    } else  if(PREFtipo == "DEPARTAMENTO"){
-      VistaUsuarioDepartamento = true;
     }
 
   }
@@ -121,8 +126,8 @@ class _Home extends State<Home> {
   void SalirCuenta() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('name',"USUARIO PRUEBA");
-    await prefs.setString('dni', "");
-    await prefs.setString('tipoUsuario', "");
+    await prefs.setString('documento', "");
+    await prefs.setString('tipo_usuario', "");
   }
 
   Future<void> cargardataprueba()  async {
@@ -387,7 +392,7 @@ class _Home extends State<Home> {
                     //color: Colors.white,
                   ),),
 
-                    HelpersViewInputs.formItemsDesignDNI(
+                    HelpersViewInputs.formItemsDesigndocumento(
                         TextFormField(
                           controller: widget.inversionmin,
                           //initialValue: '0',
@@ -409,7 +414,7 @@ class _Home extends State<Home> {
                     //color: Colors.white,
                     ),),
 
-                    HelpersViewInputs.formItemsDesignDNI(
+                    HelpersViewInputs.formItemsDesigndocumento(
                     TextFormField(
                       controller: widget.inversionmax,
                      // initialValue: '0',
@@ -881,14 +886,14 @@ class _Home extends State<Home> {
               child:
                 Column(
                 children: [
-                HelpersViewLetrasSubs.formItemsDesignBig("Intermediario"),
+                HelpersViewLetrasSubs.formItemsDesignBig("INVERSOR"),
 
                   GestureDetector(
                       onTap: ()   async {
 
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => login()),
+                          MaterialPageRoute(builder: (context) => crear_departamento()),
                         );
 
                       },
@@ -906,7 +911,7 @@ class _Home extends State<Home> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: const Icon(Icons.monetization_on, size: 50.0, color: Colors.black),
+                                      icon: const Icon(Icons.house_outlined, size: 50.0, color: Colors.black),
                                       onPressed: () {
                                       },
                                     ),
@@ -919,7 +924,7 @@ class _Home extends State<Home> {
                               child:
                               Column(
                                 children: [
-                                  HelpersViewLetrasSubs.formItemsDesign("Bancos"),
+                                  HelpersViewLetrasSubs.formItemsDesign("Crear Departamento"),
                                 ],),
                             ),
                           ],
@@ -945,7 +950,7 @@ class _Home extends State<Home> {
 
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => login()),
+                        MaterialPageRoute(builder: (context) => mis_departamentos()),
                       );
 
                     },
@@ -1595,8 +1600,8 @@ class _Home extends State<Home> {
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(10.0), // Adjust as desired
                                           child: Image.network(
-                                            widget.listApartamentos![index].imagen != null
-                                                ? widget.listApartamentos![index].imagen!
+                                            widget.listApartamentos![index].images?.first != null
+                                                ? widget.listApartamentos![index].images?.first
                                                 : 'https://picsum.photos/250?image=3',
                                             width: double.maxFinite,
                                             height: 200.0,
@@ -1620,7 +1625,7 @@ class _Home extends State<Home> {
 
                                           SizedBox(height: MediaQuery.of(context).size.height * 0.020,),
 
-                                          Text("${widget.listApartamentos![index].idDepartamento} ${widget.listApartamentos![index].descripcion}",
+                                          Text("${widget.listApartamentos![index].id} ${widget.listApartamentos![index].descripcion}",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
                                             style: const TextStyle(
@@ -1629,7 +1634,7 @@ class _Home extends State<Home> {
                                           ),
 
                                           SizedBox(height: 20),
-                                          HelpersViewLetrasSubs.formItemsDesignSubSinexpandir(widget.listApartamentos![index].precio!, "€"),
+                                          HelpersViewLetrasSubs.formItemsDesignSubSinexpandir(widget.listApartamentos[index].mensualidad ?? 'SIN DEFINIR PRECIO', "€"), //NULL CHECK OPERATOR USED ON A NULL VALUE //
                                           SizedBox(height: 20),
 
                                         ],
